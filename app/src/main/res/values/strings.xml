@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">CodeGolf</string>
+    <string name="activity_name_puzzle_select">Puzzle Select</string>
+    <string name="activity_name_puzzle_scores">Puzzle Scores</string>
+    <string name="activity_name_user_login">User Login</string>
 </resources>
