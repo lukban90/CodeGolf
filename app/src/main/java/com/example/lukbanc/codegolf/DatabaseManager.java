@@ -17,19 +17,19 @@ public class DatabaseManager extends SQLiteOpenHelper {
     private static final String DB_NAME = "code_golf_db";
     private static final int DB_VERSION = 1;
 
+    // entity tables
     private static final String TBL_PUZZLE = "puzzle";
-    private static final String TBL_SCORE = "score";
+    private static final String TBL_SOLUTION = "solution";
     private static final String TBL_USER = "user";
     private static final String TBL_PROG_LANGUAGE = "prog_language";
 
     // these additional tables represent entity relationships
     // and consist of only foreign keys
     // puzzle -- score -- user
-    private static final String TBL_PUZZLE_SCORE = "puzzle_score";
-    private static final String TBL_USER_SCORE = "user_score";
+    private static final String TBL_PUZZLE_SOLUTION = "puzzle_solution";
+    private static final String TBL_USER_SOLUTION = "user_score";
+    private static final String TBL_PUZZLE_PROG_LANG = "puzzle_prog_lang";
     // programming language / puzzle
-    private static final String TBL_PUZZLE_PROG_LANGUAGE = "puzzle_prog_language";
-    private static final String TBL_TASK_ASSIGNMENT = "task_assignment";
 
     // columns for TBL_PUZZLE
     private static final String COL_USER_ID = "user_id";
@@ -41,6 +41,17 @@ public class DatabaseManager extends SQLiteOpenHelper {
     private static final String COL_PUZZLE_NAME = "puzzle_name";
     private static final String COL_PUZZLE_DESC = "puzzle_desc";
     private static final String COL_PUZZLE_ADDED = "date_added";
+
+    // TBL_SOLUTION
+    private static final String COL_SOLUTION_ID = "solution_id";
+    private static final String COL_SOLUTION_TEXT = "solution_text";
+    private static final String COL_SOLUTION_CHAR_COUNT = "char_count";
+    private static final String COL_SOLVE_DATE = "solve_date";
+
+    // TBL_PROG_LANGUAGE
+    private static final String COL_PROG_LANG_ID = "prog_lang_id";
+    private static final String COL_PROG_LANG_NAME = "prog_lang_name";
+    private static final String COL_PROG_LANG_EXEC_PATH = "prog_lang_exec_path";
 
     public DatabaseManager( Context context ) {
         super( context, DB_NAME, null, DB_VERSION );}
@@ -63,10 +74,56 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return sql;
     }
 
-    private String getSqlCreateTableScore(){
-        return null;
+    private String getSqlCreateTableSolution(){
+        String sql = "CREATE TABLE " + TBL_SOLUTION + " ( ";
+        sql += COL_SOLUTION_ID + " INTEGER PRIMARY KEY, ";
+        sql += COL_SOLUTION_TEXT + " TEXT NOT NULL";
+        sql += COL_SOLUTION_CHAR_COUNT + " INTEGER NOT NULL, ";
+        sql += COL_SOLVE_DATE + " TEXT NOT NULL);";
+        return sql;
     }
 
+    private String getSqlCreateTableProgLanguage(){
+        String sql = "CREATE TABLE " + TBL_PROG_LANGUAGE + " ( ";
+        sql += COL_PROG_LANG_ID + " INTEGER PRIMARY KEY, ";
+        sql += COL_PROG_LANG_NAME + " TEXT NOT NULL";
+        sql += COL_PROG_LANG_EXEC_PATH + " TEXT NULL)";
+        return sql;
+    }
+
+    // relationship tables:
+    private String getSqlCreateTableUserSolution(){
+        String sql = "CREATE TABLE " + TBL_USER_SOLUTION + " ( ";
+        sql += String.format("%s INTEGER REFERENCES %s(%s), ",
+            COL_USER_ID, TBL_USER, COL_USER_ID);
+        sql += String.format("%s INTEGER REFERENCES %s(%s), ",
+            COL_SOLUTION_ID, TBL_SOLUTION, COL_SOLUTION_ID);
+        sql += String.format("PRIMARY KEY (%s,%s)", COL_USER_ID, COL_SOLUTION_ID);
+        sql += ");";
+        return sql;
+    }
+
+    private String getSqlCreateTablePuzzleSolution(){
+        String sql = "CREATE TABLE " + TBL_PUZZLE_SOLUTION + " ( ";
+        sql += String.format("%s INTEGER REFERENCES %s(%s), ",
+                COL_PUZZLE_ID, TBL_PUZZLE, COL_PUZZLE_ID);
+        sql += String.format("%s INTEGER REFERENCES %s(%s), ",
+                COL_SOLUTION_ID, TBL_SOLUTION, COL_SOLUTION_ID);
+        sql += String.format("PRIMARY KEY (%s,%s)", COL_PUZZLE_ID, COL_SOLUTION_ID);
+        sql += ");";
+        return sql;
+    }
+
+    private String getSqlCreateTablePuzzleProgLang(){
+        String sql = "CREATE TABLE " + TBL_PUZZLE_PROG_LANG + " ( ";
+        sql += String.format("%s INTEGER REFERENCES %s(%s), ",
+                COL_PUZZLE_ID, TBL_PUZZLE, COL_PUZZLE_ID);
+        sql += String.format("%s INTEGER REFERENCES %s(%s), ",
+                COL_PROG_LANG_ID, TBL_PROG_LANGUAGE, COL_PROG_LANG_ID);
+        sql += String.format("PRIMARY KEY (%s,%s)", COL_PUZZLE_ID, COL_PROG_LANG_ID);
+        sql += ");";
+        return sql;
+    }
 
     @Override
     public void onCreate(SQLiteDatabase db){
@@ -74,10 +131,20 @@ public class DatabaseManager extends SQLiteOpenHelper {
         String sqlCreateTablePuzzle = getSqlCreateTablePuzzle();
         String sqlCreateTableUser = getSqlCreateTablePuzzle();
         String sqlCreateTableScore = getSqlCreateTablePuzzle();
+        String sqlCreateTableProgLang = getSqlCreateTableProgLanguage();
+
+        String sqlCreateTablePuzzleSol = getSqlCreateTablePuzzleSolution();
+        String sqlCreateTablePuzzleProgLang = getSqlCreateTablePuzzleProgLang();
+        String sqlCreateTableUserSol = getSqlCreateTableUserSolution();
         try{
             db.execSQL(sqlCreateTablePuzzle);
             db.execSQL(sqlCreateTableUser);
             db.execSQL(sqlCreateTableScore);
+            db.execSQL(sqlCreateTableProgLang);
+
+            db.execSQL(sqlCreateTablePuzzleSol);
+            db.execSQL(sqlCreateTablePuzzleProgLang);
+            db.execSQL(sqlCreateTableUserSol);
         }
         catch (Exception e){
             Log.e("table create", e.toString());
@@ -87,13 +154,14 @@ public class DatabaseManager extends SQLiteOpenHelper {
     @Override
     public void onUpgrade( SQLiteDatabase db, int oldVersion, int newVersion ){
         // drop relationship tables first to respect foreign key restraints
-        db.execSQL( "drop table if exists " + TBL_PUZZLE_PROG_LANGUAGE );
-        db.execSQL( "drop table if exists " + TBL_PUZZLE_SCORE );
-        db.execSQL( "drop table if exists " + TBL_USER_SCORE );
+        db.execSQL( "drop table if exists " + TBL_PUZZLE_PROG_LANG );
+        db.execSQL( "drop table if exists " + TBL_PUZZLE_SOLUTION );
+        db.execSQL( "drop table if exists " + TBL_USER_SOLUTION );
         // then drop main entity tables
         db.execSQL( "drop table if exists " + TBL_PUZZLE );
-        db.execSQL( "drop table if exists " + TBL_SCORE );
+        db.execSQL( "drop table if exists " + TBL_SOLUTION );
         db.execSQL( "drop table if exists " + TBL_USER );
+        db.execSQL( "drop table if exists " + TBL_PROG_LANGUAGE );
         // recreate all tables
         onCreate(db);
     }

@@ -10,8 +10,12 @@ public class Puzzle {
     private int puzzleId;
     private String puzzleTitle;
     private String description;
+    // design question: should all puzzles require the user to define one method?
+    // that is how they do it at code fights .com or whatever that site is called.
+    private String methodName;
     private ProgrammingLanguage programmingLanguage;
     private Date createdDate;
+
     public Puzzle(){
 
     }
