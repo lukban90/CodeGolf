@@ -38,7 +38,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     // columns for TBL_PUZZLE
     private static final String COL_PUZZLE_ID = "puzzle_id";
-    private static final String COL_PUZZLE_NAME = "puzzle_name";
+    private static final String COL_PUZZLE_TITLE = "puzzle_TITLE";
     private static final String COL_PUZZLE_DESC = "puzzle_desc";
     private static final String COL_PUZZLE_ADDED = "date_added";
 
@@ -59,7 +59,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     private String getSqlCreateTablePuzzle(){
         String sql = "CREATE TABLE "+TBL_PUZZLE+" ( ";
         sql += COL_PUZZLE_ID + " INTEGER PRIMARY KEY, ";
-        sql += COL_PUZZLE_NAME + " TEXT NOT NULL, ";
+        sql += COL_PUZZLE_TITLE + " TEXT NOT NULL, ";
         sql += COL_PUZZLE_DESC + " TEXT NOT NULL, ";
         sql += COL_PUZZLE_ADDED + " TEXT NULL";
         sql += ");";
@@ -184,10 +184,52 @@ public class DatabaseManager extends SQLiteOpenHelper {
     }
 
     public int insertUser(User user) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String sqlInsert = "insert into " + TBL_USER +
+                " (" + COL_USER_NAME + "," + COL_EMAIL + ")";
+        sqlInsert += " values ('" + user.getUserName() + "', '" + user.getEmail() + "')";
+        db.execSQL(sqlInsert);
+        // now get the insert id
+        String sqlGetId = "select last_insert_rowid()";
+        Cursor cursor = db.rawQuery(sqlGetId, null);
+        int id = -1;
+        if (cursor.moveToFirst()) {
+            id = cursor.getInt(0);
+        }
+        db.close();
+        user.setUserId(id);
+        return id;
+    }
+
+    public Solution selectSolutionById( int solutionId ){
+        String sqlQuery= "select * from " + TBL_SOLUTION;
+        sqlQuery += String.format(" where %s = %d", COL_SOLUTION_ID, solutionId);
         SQLiteDatabase db= this.getWritableDatabase( );
-        String sqlInsert= "insert into "+TBL_USER +
-                " ("+COL_USER_NAME+","+COL_EMAIL+")";
-        sqlInsert+= " values ('" + user.getUserName() +  "', '"+ user.getEmail()+"')";
+        Cursor cursor = db.rawQuery(sqlQuery, null);
+
+        if(cursor.moveToFirst()){
+            int id = cursor.getInt(0);
+            String text = cursor.getString(1);
+            int charCt = cursor.getInt(2);
+            String solveDateStr = cursor.getString(3);
+            Date solveDate = solveDateStr == null ? null : new Date(solveDateStr);
+            return new Solution(id, text, charCt, solveDate);
+        }
+        return null;
+    }
+
+    public int insertSolution(Solution solution) {
+        Date solveDate = solution.getSolveDate();
+        if(solveDate == null)
+            solveDate = new Date();
+        // convert Date to string for database storage
+        String solveDateStr = solveDate.toString();
+
+        SQLiteDatabase db= this.getWritableDatabase( );
+        String sqlInsert= "insert into "+TBL_SOLUTION +
+                " ("+COL_SOLUTION_TEXT+","+COL_SOLUTION_CHAR_COUNT+","+COL_SOLVE_DATE+")";
+        sqlInsert+= " values ('" + solution.getSolutionText() +  "', "+
+                solution.getSolutionCharCt() +", '"+solveDateStr+"')";
         db.execSQL(sqlInsert);
         // now get the insert id
         String sqlGetId = "select last_insert_rowid()";
@@ -195,10 +237,28 @@ public class DatabaseManager extends SQLiteOpenHelper {
         int id = -1;
         if(cursor.moveToFirst()){
             id = cursor.getInt(0);
+
         }
         db.close( );
-        user.setUserId(id);
+        solution.setSolutionId(id);
         return id;
+    }
+
+    public Puzzle selectPuzzleById( int puzzleId ){
+        String sqlQuery= "select * from " + TBL_PUZZLE;
+        sqlQuery += String.format(" where %s = %d", COL_PUZZLE_ID, puzzleId);
+        SQLiteDatabase db= this.getWritableDatabase( );
+        Cursor cursor = db.rawQuery(sqlQuery, null);
+
+        if(cursor.moveToFirst()){
+            int id = cursor.getInt(0);
+            String title = cursor.getString(1);
+            String desc = cursor.getString(2);
+            String addedStr = cursor.getString(3);
+            Date added = addedStr == null ? null : new Date(addedStr);
+            return new Puzzle(id, title, desc, added);
+        }
+        return null;
     }
 
     public int insertPuzzle(Puzzle puzzle) {
@@ -210,7 +270,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
         SQLiteDatabase db= this.getWritableDatabase( );
         String sqlInsert= "insert into "+TBL_PUZZLE +
-                " ("+COL_PUZZLE_NAME+","+COL_PUZZLE_DESC+","+COL_PUZZLE_ADDED+")";
+                " ("+COL_PUZZLE_TITLE+","+COL_PUZZLE_DESC+","+COL_PUZZLE_ADDED+")";
         sqlInsert+= " values ('" + puzzle.getPuzzleTitle() +  "', '"+
                 puzzle.getDescription() +"', '"+addedStr+"')";
         db.execSQL(sqlInsert);

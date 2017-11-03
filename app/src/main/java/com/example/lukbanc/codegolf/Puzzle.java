@@ -19,10 +19,10 @@ public class Puzzle {
     public Puzzle(){
 
     }
-    public Puzzle(int puzzleId, String puzzleTitle, ProgrammingLanguage progLanguage, Date createdDate){
+    public Puzzle(int puzzleId, String puzzleTitle, String desc, Date createdDate){
         this.puzzleId = puzzleId;
+        this.description = desc;
         this.puzzleTitle = puzzleTitle;
-        this.programmingLanguage = progLanguage;
         this.createdDate = createdDate;
     }
 
