@@ -18,7 +18,7 @@
         </activity>
 
         <activity
-            android:name=".SelectPuzzle"
+            android:name=".SelectPuzzleActivity"
             android:screenOrientation="portrait">
         </activity>
 

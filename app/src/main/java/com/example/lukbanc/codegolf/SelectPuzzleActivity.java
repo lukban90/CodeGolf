@@ -11,7 +11,7 @@ import android.widget.RadioGroup;
  * Created by lukbanc on 11/2/17.
  */
 
-public class SelectPuzzle extends AppCompatActivity {
+public class SelectPuzzleActivity extends AppCompatActivity {
 
     private RadioGroup radioGroup;
 
@@ -21,6 +21,11 @@ public class SelectPuzzle extends AppCompatActivity {
         setContentView(R.layout.puzzle_select);
 
         radioGroup = (RadioGroup)findViewById(R.id.radio_group);
+
+        // create a test puzzle, store it in the database
+        DatabaseManager dbm = new DatabaseManager(this);
+
+
     }
 
     public void addRadioButtons(int number) {

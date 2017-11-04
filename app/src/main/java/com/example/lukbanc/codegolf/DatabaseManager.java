@@ -166,6 +166,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
         onCreate(db);
     }
 
+    // OBJECT INSERTION AND SELECTION
+
     public User selectUserById( int userId ){
         String sqlQuery= "select * from " + TBL_USER;
         sqlQuery += String.format(" where %s = %d", COL_USER_ID, userId);
@@ -286,4 +288,42 @@ public class DatabaseManager extends SQLiteOpenHelper {
         puzzle.setPuzzleId(id);
         return id;
     }
+
+    public ProgrammingLanguage selectProgLangById( int progLangId ){
+        String sqlQuery= "select * from " + TBL_PROG_LANGUAGE;
+        sqlQuery += String.format(" where %s = %d", COL_PROG_LANG_ID, progLangId);
+        SQLiteDatabase db= this.getWritableDatabase( );
+        Cursor cursor = db.rawQuery(sqlQuery, null);
+
+        if(cursor.moveToFirst()){
+            int id = cursor.getInt(0);
+            String name = cursor.getString(1);
+            String execPath = cursor.getString(2);
+            String addedStr = cursor.getString(3);
+            Date added = addedStr == null ? null : new Date(addedStr);
+            return new ProgrammingLanguage(id, name, execPath);
+        }
+        return null;
+    }
+
+    public int insertProgLang(ProgrammingLanguage progLang) {
+        SQLiteDatabase db= this.getWritableDatabase( );
+        String sqlInsert= "insert into "+TBL_PUZZLE +
+                " ("+COL_PROG_LANG_NAME+","+COL_PROG_LANG_EXEC_PATH+")";
+        sqlInsert+= " values ('" + progLang.getProgLangName() +  "', '"+
+                progLang.getProgLangExecPath()+"')";
+        db.execSQL(sqlInsert);
+        // now get the insert id
+        String sqlGetId = "select last_insert_rowid()";
+        Cursor cursor = db.rawQuery(sqlGetId, null);
+        int id = -1;
+        if(cursor.moveToFirst()){
+            id = cursor.getInt(0);
+
+        }
+        db.close( );
+        progLang.setProgLangId(id);
+        return id;
+    }
+
 }

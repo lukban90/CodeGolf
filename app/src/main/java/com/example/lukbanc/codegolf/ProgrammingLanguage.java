@@ -12,8 +12,12 @@ public class ProgrammingLanguage {
 
     }
     public ProgrammingLanguage(int progLangId, String langName, String execPath){
-        this.progLangId =progLangId;
+        this.progLangId = progLangId;
         this.langName = langName;
         this.execPath = execPath;
     }
+    public int getProgLangId(){return progLangId;}
+    public void setProgLangId(int id){this.progLangId = id;}
+    public String getProgLangName(){return langName;}
+    public String getProgLangExecPath(){return execPath;}
 }
