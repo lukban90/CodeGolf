@@ -16,12 +16,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".SelectPuzzleActivity"
             android:screenOrientation="portrait">
-        </activity>
 
+        </activity>
+        <activity android:name=".SolutionEditActivity">
+
+        </activity>
     </application>
 
 </manifest>

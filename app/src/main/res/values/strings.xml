@@ -3,4 +3,9 @@
     <string name="activity_name_puzzle_select">Puzzle Select</string>
     <string name="activity_name_puzzle_scores">Puzzle Scores</string>
     <string name="activity_name_user_login">User Login</string>
+    <string name="bullet_example">\u2022 Alan Turing: 450pts</string>
+    <string name="all_high_scores">Top scores overall:</string>
+    <string name="friends_high_scores">Top scores of your friends:</string>
+    <string name="back_to_problems">Back to the problem</string>
+    <string name="example_problem_title">Problem #3124 What a day!</string>
 </resources>
