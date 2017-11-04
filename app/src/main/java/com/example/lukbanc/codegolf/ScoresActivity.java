@@ -12,8 +12,5 @@ public class ScoresActivity extends AppCompatActivity {
         setContentView(R.layout.activity_scores);
     }
 
-    public void toPuzzles() {
-        Intent intent = new Intent(this, MainActivity.class);
-        startActivity(intent);
-    }
+
 }
