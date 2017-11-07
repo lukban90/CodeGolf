@@ -18,7 +18,7 @@ public class SelectPuzzleActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.puzzle_select);
+        setContentView(R.layout.activity_puzzle_select);
 
         radioGroup = (RadioGroup)findViewById(R.id.radio_group);
 
