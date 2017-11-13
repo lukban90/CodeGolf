@@ -1,14 +1,15 @@
 package com.example.lukbanc.codegolf;
 
+import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
+import android.widget.SearchView;
 
 /**
  * Created by lukbanc on 11/2/17.
@@ -21,7 +22,25 @@ public class SelectPuzzleActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_puzzle_select);
+
         upDateView();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_select_puzzle, menu);
+
+        //create searchable configuration with the SearchView
+        //Credit mainly given Android App Development with minor tweaks
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.action_search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(
+                new ComponentName(this, SearchResultsActivity.class)) );
+
+        return true;
     }
 
     public void upDateView() {
