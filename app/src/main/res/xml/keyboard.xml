@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:keyWidth="15%p"
+    android:keyHeight="15%p" >
+
+    <Row>
+        <Key android:keyLabel="def"/>
+        <Key android:keyLabel="print"   android:horizontalGap="4%p"/>
+        <Key android:keyLabel="return"  android:horizontalGap="4%p"/>
+    </Row>
+
+    <Row>
+        <Key android:codes="-1"
+            android:keyLabel="Back"
+            android:keyWidth="30%p"/>
+
+        <Key android:codes="100"
+            android:keyLabel="Enter"
+            android:keyWidth="50%p"
+            android:horizontalGap="4%p"/>
+    </Row>
+
+</Keyboard>
