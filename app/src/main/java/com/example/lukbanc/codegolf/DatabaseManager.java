@@ -21,42 +21,42 @@ public class DatabaseManager extends SQLiteOpenHelper {
     private static final int DB_VERSION = 1;
 
     // entity tables
-    private static final String TBL_PUZZLE = "puzzle";
-    private static final String TBL_SOLUTION = "solution";
-    private static final String TBL_USER = "user";
-    private static final String TBL_PROG_LANGUAGE = "prog_language";
+    public static final String TBL_PUZZLE = "puzzle";
+    public static final String TBL_SOLUTION = "solution";
+    public static final String TBL_USER = "user";
+    public static final String TBL_PROG_LANGUAGE = "prog_language";
 
     // these additional tables represent entity relationships
     // and consist of only foreign keys
     // puzzle -- score -- user
-    private static final String TBL_PUZZLE_SOLUTION = "puzzle_solution";
-    private static final String TBL_USER_SOLUTION = "user_score";
-    private static final String TBL_PUZZLE_PROG_LANG = "puzzle_prog_lang";
+    public static final String TBL_PUZZLE_SOLUTION = "puzzle_solution";
+    public static final String TBL_USER_SOLUTION = "user_score";
+    public static final String TBL_PUZZLE_PROG_LANG = "puzzle_prog_lang";
     // programming language / puzzle
 
     // columns for TBL_PUZZLE
-    private static final String COL_USER_ID = "user_id";
-    private static final String COL_USER_NAME = "user_name";
-    private static final String COL_EMAIL = "email";
+    public static final String COL_USER_ID = "user_id";
+    public static final String COL_USER_NAME = "user_name";
+    public static final String COL_EMAIL = "email";
 
     // columns for TBL_PUZZLE
-    private static final String COL_PUZZLE_ID = "puzzle_id";
-    private static final String COL_PUZZLE_TITLE = "puzzle_title";
-    private static final String COL_PUZZLE_DESC = "puzzle_desc";
-    private static final String COL_PUZZLE_ADDED = "date_added";
+    public static final String COL_PUZZLE_ID = "puzzle_id";
+    public static final String COL_PUZZLE_TITLE = "puzzle_title";
+    public static final String COL_PUZZLE_DESC = "puzzle_desc";
+    public static final String COL_PUZZLE_ADDED = "date_added";
 
     // TBL_SOLUTION
-    private static final String COL_SOLUTION_ID = "solution_id";
-    private static final String COL_SOLUTION_TEXT = "solution_text";
-    private static final String COL_SOLUTION_CHAR_COUNT = "char_count";
-    private static final String COL_SOLVE_DATE = "solve_date";
+    public static final String COL_SOLUTION_ID = "solution_id";
+    public static final String COL_SOLUTION_TEXT = "solution_text";
+    public static final String COL_SOLUTION_CHAR_COUNT = "char_count";
+    public static final String COL_SOLVE_DATE = "solve_date";
 
     // TBL_PROG_LANGUAGE
-    private static final String COL_PROG_LANG_ID = "prog_lang_id";
-    private static final String COL_PROG_LANG_NAME = "prog_lang_name";
-    private static final String COL_PROG_LANG_EXEC_PATH = "prog_lang_exec_path";
+    public static final String COL_PROG_LANG_ID = "prog_lang_id";
+    public static final String COL_PROG_LANG_NAME = "prog_lang_name";
+    public static final String COL_PROG_LANG_EXEC_PATH = "prog_lang_exec_path";
 
-    private static final String SERVER_PYTHON_URL = "http://67.171.28.34/py";
+    public static final String SERVER_PYTHON_URL = "http://67.171.28.34/py";
 
 
     public DatabaseManager( Context context ) {
@@ -224,7 +224,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 "%s/%s?%s=%d",SERVER_PYTHON_URL,"get_puzzle_by_id.py", COL_PUZZLE_ID, puzzleId);
     }
 
-    public void fetchJson(String url, JsonAsyncTask.OnTaskCompleted onTaskCompleted){
+    public static void fetchJson(String url, JsonAsyncTask.OnTaskCompleted onTaskCompleted){
         JsonAsyncTask task = new JsonAsyncTask();
         task.setTaskCompletedListener(onTaskCompleted);
         task.execute(url);
