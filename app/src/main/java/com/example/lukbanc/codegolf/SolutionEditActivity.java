@@ -13,14 +13,19 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Locale;
+
+import static com.example.lukbanc.codegolf.DatabaseManager.COL_PUZZLE_ID;
+import static com.example.lukbanc.codegolf.DatabaseManager.COL_SOLUTION_TEXT;
 
 public class SolutionEditActivity extends AppCompatActivity {
 
@@ -32,7 +37,7 @@ public class SolutionEditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_solution_edit);
 
-        puzzleId = getIntent().getIntExtra(DatabaseManager.COL_PUZZLE_ID, 0);
+        puzzleId = getIntent().getIntExtra(COL_PUZZLE_ID, 0);
         dbm = new DatabaseManager(this);
 
 
@@ -60,7 +65,7 @@ public class SolutionEditActivity extends AppCompatActivity {
                     Log.d("YAY","do something with the result.");
                     Puzzle p = new Puzzle();
                     try {
-                        p.setPuzzleId(result.getInt(DatabaseManager.COL_PUZZLE_ID));
+                        p.setPuzzleId(result.getInt(COL_PUZZLE_ID));
                         p.setPuzzleTitle(result.getString(DatabaseManager.COL_PUZZLE_TITLE));
                         p.setDescription(result.getString(DatabaseManager.COL_PUZZLE_DESC));
                     }
@@ -83,7 +88,7 @@ public class SolutionEditActivity extends AppCompatActivity {
     }
 
     public void onSubmit(View view){
-
+        sendSolution();
     }
 
     public void populatePuzzleText(Puzzle puzzle) {
@@ -95,20 +100,42 @@ public class SolutionEditActivity extends AppCompatActivity {
     }
 
     public void sendSolution() {
-        EditText et = (EditText) findViewById(R.id.puzzle_soln);
-        String solution = et.getText().toString();
+        EditText et = findViewById(R.id.puzzle_soln);
 
-        dbm.fetchJson("67.171.28.34/py/submit_solution.py", new JsonAsyncTask.OnTaskCompleted() {
+        String solText = et.getText().toString();
+        String baseUrl = "http://67.171.28.34/py/submit_solution.py";
+
+        String encoded = URLEncoder.encode(solText);
+        String url = String.format("%s?%s=%s&%s=%s",baseUrl, DatabaseManager.COL_PUZZLE_ID, puzzleId, DatabaseManager.COL_SOLUTION_TEXT, encoded);
+
+        Log.d("URL: ",url);
+
+        dbm.fetchJson(url, new JsonAsyncTask.OnTaskCompleted() {
             @Override
             public void onTaskCompleted(JSONObject result) {
-
+                if(result != null){
+                    Log.d("YAY","do something with the result.");
+                    try {
+                        String output = result.getString("output");
+                        displayResult(output);
+                    }catch (Exception e){
+                        Log.e("task complete", e.toString());
+                    }
+                }
             }
-
             @Override
             public void onTaskCompleted(JSONArray result) {
-
+                if(result != null){
+                    return;
+                }
             }
         });
+    }
+
+    public void displayResult(String output) {
+        RelativeLayout wrapper = findViewById(R.id.wrapper);
+        TextView tv = findViewById(R.id.output);
+        tv.setText(output);
     }
 
     private Keyboard keyboard;
