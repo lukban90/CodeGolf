@@ -50,7 +50,7 @@ class JsonAsyncTask extends AsyncTask<String, Void, Boolean> {
     }
 
     public void setPostData(String postData){
-
+        this.postData = postData;
     }
 
     protected void onPreExecute() {
@@ -100,8 +100,11 @@ class JsonAsyncTask extends AsyncTask<String, Void, Boolean> {
                 // parse it as an array
                 jsonArray = new JSONArray(content);
             }
-            else{
+            else if(content.charAt(0)=='{'){
                 jsonObject = new JSONObject(content);
+            }
+            else{
+                Log.e("RESPONSE NOT JSON", content);
             }
             return true;
 

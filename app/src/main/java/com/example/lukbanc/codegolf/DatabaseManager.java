@@ -6,10 +6,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.GetChars;
 import android.util.Log;
+import android.webkit.JavascriptInterface;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Locale;
 
@@ -225,8 +227,14 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 "%s/%s?%s=%d",SERVER_PYTHON_URL,"get_puzzle_by_id.py", COL_PUZZLE_ID, puzzleId);
     }
 
-    public static void fetchJson(String url, JsonAsyncTask.OnTaskCompleted onTaskCompleted){
+    public static void fetchJson(String url, JsonAsyncTask.OnTaskCompleted onTaskCompleted) {
+        fetchJson(url, JsonAsyncTask.REQUEST_METHOD_GET, null, onTaskCompleted);
+    }
+    public static void fetchJson(String url, String method, String postData, JsonAsyncTask.OnTaskCompleted onTaskCompleted){
         JsonAsyncTask task = new JsonAsyncTask();
+        task.setRequestMethod(method);
+        task.setPostData(postData);
+
         task.setTaskCompletedListener(onTaskCompleted);
 
         task.execute(url);
@@ -252,6 +260,40 @@ public class DatabaseManager extends SQLiteOpenHelper {
                     String pInfo = String.format(Locale.ENGLISH,
                             "(%d, %s, %s)", p.getPuzzleId(), p.getPuzzleTitle(), p.getDescription());
                     Log.d("PUZZLE INFO", pInfo);
+                }
+            }
+            @Override
+            public void onTaskCompleted(JSONArray result) {
+                if(result != null){
+                    return;
+                }
+            }
+        });
+    }
+
+    public void testREST_POST(){
+
+        //selectPuzzleByIdTest(1);
+        int puzzId = 1;
+        String solText = "square_num = lambda x: x**2";
+        String baseUrl = "http://67.171.28.34/py/submit_solution.py";
+
+        String encoded = URLEncoder.encode(solText);
+        String url = String.format("%s?%s=%s&%s=%s",baseUrl, COL_PUZZLE_ID, puzzId, COL_SOLUTION_TEXT, encoded);
+
+        Log.d("URL: ",url);
+
+        fetchJson(url, new JsonAsyncTask.OnTaskCompleted() {
+            @Override
+            public void onTaskCompleted(JSONObject result) {
+                if(result != null){
+                    Log.d("YAY","do something with the result.");
+                    try {
+                        String output = result.getString("output");
+                        Log.d("OUTPUT: ",output);
+                    }catch (Exception e){
+                        Log.e("task complete", e.toString());
+                    }
                 }
             }
             @Override

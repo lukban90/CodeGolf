@@ -14,7 +14,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         DatabaseManager dbm = new DatabaseManager(this);
-        dbm.testREST();
+         //dbm.testREST();
+        dbm.testREST_POST();
         // set button callbacks
         Button btnSelectPuzzle = (Button)findViewById(R.id.btn_puzzle_select);
     }
