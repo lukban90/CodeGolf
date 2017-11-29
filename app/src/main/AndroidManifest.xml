@@ -40,7 +40,8 @@
 
         <activity
             android:name=".SearchResultsActivity"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="stateAlwaysHidden">
 
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />

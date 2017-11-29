@@ -12,6 +12,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -35,9 +36,9 @@ public class SearchResultsActivity extends AppCompatActivity {
         keyboardView = (KeyboardView)findViewById(R.id.keyboardview);
         keyboardView.setKeyboard( keyboard );
 
-        //registerEditText(R.id.puzzle_soln);
+        registerEditText(R.id.puzzle_soln);
 
-        //keyboardView.setOnKeyboardActionListener(myKeyboardActionListener);
+        keyboardView.setOnKeyboardActionListener(myKeyboardActionListener);
     }
 
     // onClick to open keyboard
@@ -49,7 +50,6 @@ public class SearchResultsActivity extends AppCompatActivity {
                     Activity.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(
                     v.getWindowToken(), 0);
 
-            //registerEditText(R.id.puzzle_soln);
         }
     }
 
@@ -101,13 +101,29 @@ public class SearchResultsActivity extends AppCompatActivity {
     public boolean isCustomKeyboardVisible() {
         return keyboardView.getVisibility() == View.VISIBLE;
     }
+    // end of helpers to hide/show/check customboard
 
     // Functionality of the keyboard
     private KeyboardView.OnKeyboardActionListener myKeyboardActionListener =
             new KeyboardView.OnKeyboardActionListener() {
                 @Override
                 public void onPress(int i) {
+                    EditText dummy = (EditText) findViewById( R.id.puzzle_soln );
+                    //dummy.setText("Hello: " + i);
+                    switch (i) {
 
+                        case 65: //def
+                            dummy.setText("def");
+                            break;
+
+                        case 66: // print
+                            dummy.setText("print");
+                            break;
+
+                        default:
+                            dummy.setText("" + i);
+                            break;
+                    }
                 }
 
                 @Override
