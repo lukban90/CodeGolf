@@ -33,4 +33,7 @@ public class Puzzle {
     public Date getCreatedDate(){return createdDate;}
     public String getPuzzleTitle(){return puzzleTitle;}
     public void setPuzzleTitle(String title){puzzleTitle = title;}
+    public void setTargFuncName(String funcName){methodName = funcName;}
+
+    public String getTargFuncName(){return methodName;}
 }

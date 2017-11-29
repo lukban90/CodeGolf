@@ -41,6 +41,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public static final String COL_USER_ID = "user_id";
     public static final String COL_USER_NAME = "user_name";
     public static final String COL_EMAIL = "email";
+    public static final String COL_TARG_FUNC_NAME ="targ_func_name";
 
     // columns for TBL_PUZZLE
     public static final String COL_PUZZLE_ID = "puzzle_id";
