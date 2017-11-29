@@ -68,6 +68,7 @@ public class SolutionEditActivity extends AppCompatActivity {
                         p.setPuzzleId(result.getInt(COL_PUZZLE_ID));
                         p.setPuzzleTitle(result.getString(DatabaseManager.COL_PUZZLE_TITLE));
                         p.setDescription(result.getString(DatabaseManager.COL_PUZZLE_DESC));
+                        p.setTargFuncName(result.getString(DatabaseManager.COL_TARG_FUNC_NAME));
                     }
                     catch (Exception e) {
                     }
@@ -94,7 +95,8 @@ public class SolutionEditActivity extends AppCompatActivity {
     public void populatePuzzleText(Puzzle puzzle) {
         TextView nameTV  = (TextView) findViewById(R.id.puzzle_problem);
         TextView titleTV = (TextView) findViewById(R.id.title);
-
+        TextView funcNameTv = (TextView) findViewById(R.id.val_target_function);
+        funcNameTv.setText(puzzle.getTargFuncName());
         titleTV.setText(puzzle.getPuzzleTitle());
         nameTV.setText(puzzle.getDescription());
     }
@@ -135,6 +137,8 @@ public class SolutionEditActivity extends AppCompatActivity {
     public void displayResult(String output) {
         RelativeLayout wrapper = findViewById(R.id.wrapper);
         TextView tv = findViewById(R.id.output);
+
+        //textView.setText(Html.fromHtml(Html.fromHtml(text).toString()))
         tv.setText(output);
     }
 

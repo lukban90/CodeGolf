@@ -30,11 +30,31 @@
             android:layout_alignParentStart="true" />
             <!--android:onClick="openKeyoard"/>-->
 
+
+        <TextView
+            android:id="@+id/lbl_target_function"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/puzzle_problem"
+            android:gravity="center"
+            android:text="target function: "
+            />
+
+        <TextView
+            android:id="@+id/val_target_function"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/lbl_target_function"
+            android:layout_toRightOf="@id/lbl_target_function"
+            android:layout_alignBaseline="@id/lbl_target_function"
+            android:layout_marginLeft="10dp"
+            android:text="none" />
+
         <Button
             android:id="@+id/kb_custom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/puzzle_problem"
+            android:layout_below="@+id/lbl_target_function"
             android:text="keys"
             android:onClick="openKeyoard"/>
 
@@ -79,6 +99,7 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
+                android:lines="100"
                 android:inputType="text"/>
         </ScrollView>
         <ScrollView
@@ -87,8 +108,11 @@
             android:layout_height="match_parent">
             <TextView
                 android:id="@+id/output"
+                android:singleLine="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:lines="100"
+                android:maxLines="100"
                 />
         </ScrollView>
 
