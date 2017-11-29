@@ -7,7 +7,10 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.text.GetChars;
 import android.util.Log;
 
+import org.json.JSONObject;
+
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by Kyle on 10/27/2017.
@@ -38,7 +41,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     // columns for TBL_PUZZLE
     private static final String COL_PUZZLE_ID = "puzzle_id";
-    private static final String COL_PUZZLE_TITLE = "puzzle_TITLE";
+    private static final String COL_PUZZLE_TITLE = "puzzle_title";
     private static final String COL_PUZZLE_DESC = "puzzle_desc";
     private static final String COL_PUZZLE_ADDED = "date_added";
 
@@ -52,6 +55,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
     private static final String COL_PROG_LANG_ID = "prog_lang_id";
     private static final String COL_PROG_LANG_NAME = "prog_lang_name";
     private static final String COL_PROG_LANG_EXEC_PATH = "prog_lang_exec_path";
+
+    private static final String SERVER_PYTHON_URL = "http://67.171.28.34/py";
+
 
     public DatabaseManager( Context context ) {
         super( context, DB_NAME, null, DB_VERSION );}
@@ -103,47 +109,14 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return sql;
     }
 
-    private String getSqlCreateTablePuzzleSolution(){
-        String sql = "CREATE TABLE " + TBL_PUZZLE_SOLUTION + " ( ";
-        sql += String.format("%s INTEGER REFERENCES %s(%s), ",
-                COL_PUZZLE_ID, TBL_PUZZLE, COL_PUZZLE_ID);
-        sql += String.format("%s INTEGER REFERENCES %s(%s), ",
-                COL_SOLUTION_ID, TBL_SOLUTION, COL_SOLUTION_ID);
-        sql += String.format("PRIMARY KEY (%s,%s)", COL_PUZZLE_ID, COL_SOLUTION_ID);
-        sql += ");";
-        return sql;
-    }
-
-    private String getSqlCreateTablePuzzleProgLang(){
-        String sql = "CREATE TABLE " + TBL_PUZZLE_PROG_LANG + " ( ";
-        sql += String.format("%s INTEGER REFERENCES %s(%s), ",
-                COL_PUZZLE_ID, TBL_PUZZLE, COL_PUZZLE_ID);
-        sql += String.format("%s INTEGER REFERENCES %s(%s), ",
-                COL_PROG_LANG_ID, TBL_PROG_LANGUAGE, COL_PROG_LANG_ID);
-        sql += String.format("PRIMARY KEY (%s,%s)", COL_PUZZLE_ID, COL_PROG_LANG_ID);
-        sql += ");";
-        return sql;
-    }
 
     @Override
     public void onCreate(SQLiteDatabase db){
-        // create all the tables
-        String sqlCreateTablePuzzle = getSqlCreateTablePuzzle();
         String sqlCreateTableUser = getSqlCreateTablePuzzle();
-        String sqlCreateTableScore = getSqlCreateTablePuzzle();
-        String sqlCreateTableProgLang = getSqlCreateTableProgLanguage();
 
-        String sqlCreateTablePuzzleSol = getSqlCreateTablePuzzleSolution();
-        String sqlCreateTablePuzzleProgLang = getSqlCreateTablePuzzleProgLang();
         String sqlCreateTableUserSol = getSqlCreateTableUserSolution();
         try{
-            db.execSQL(sqlCreateTablePuzzle);
             db.execSQL(sqlCreateTableUser);
-            db.execSQL(sqlCreateTableScore);
-            db.execSQL(sqlCreateTableProgLang);
-
-            db.execSQL(sqlCreateTablePuzzleSol);
-            db.execSQL(sqlCreateTablePuzzleProgLang);
             db.execSQL(sqlCreateTableUserSol);
         }
         catch (Exception e){
@@ -246,21 +219,40 @@ public class DatabaseManager extends SQLiteOpenHelper {
         return id;
     }
 
-    public Puzzle selectPuzzleById( int puzzleId ){
-        String sqlQuery= "select * from " + TBL_PUZZLE;
-        sqlQuery += String.format(" where %s = %d", COL_PUZZLE_ID, puzzleId);
-        SQLiteDatabase db= this.getWritableDatabase( );
-        Cursor cursor = db.rawQuery(sqlQuery, null);
+    public String getSelectPuzzleByIdUrl(int puzzleId){
+        return String.format(Locale.ENGLISH,
+                "%s/%s?%s=%d",SERVER_PYTHON_URL,"get_puzzle_by_id.py", COL_PUZZLE_ID, puzzleId);
+    }
 
-        if(cursor.moveToFirst()){
-            int id = cursor.getInt(0);
-            String title = cursor.getString(1);
-            String desc = cursor.getString(2);
-            String addedStr = cursor.getString(3);
-            Date added = addedStr == null ? null : new Date(addedStr);
-            return new Puzzle(id, title, desc, added);
-        }
-        return null;
+    public void fetchJson(String url, JsonAsyncTask.OnTaskCompleted onTaskCompleted){
+        JsonAsyncTask task = new JsonAsyncTask();
+        task.setTaskCompletedListener(onTaskCompleted);
+        task.execute(url);
+    }
+
+    public void testREST(){
+
+        //selectPuzzleByIdTest(1);
+
+        fetchJson(getSelectPuzzleByIdUrl(1), new JsonAsyncTask.OnTaskCompleted() {
+            @Override
+            public void onTaskCompleted(JSONObject result) {
+                if(result != null){
+                    Log.d("YAY","do something with the result.");
+                    Puzzle p = new Puzzle();
+                    try {
+                        p.setPuzzleId(result.getInt(COL_PUZZLE_ID));
+                        p.setPuzzleTitle(result.getString(COL_PUZZLE_TITLE));
+                        p.setDescription(result.getString(COL_PUZZLE_DESC));
+                    }
+                    catch (Exception e) {
+                    }
+                    String pInfo = String.format(Locale.ENGLISH,
+                            "(%d, %s, %s)", p.getPuzzleId(), p.getPuzzleTitle(), p.getDescription());
+                    Log.d("PUZZLE INFO", pInfo);
+                }
+            }
+        });
     }
 
     public int insertPuzzle(Puzzle puzzle) {

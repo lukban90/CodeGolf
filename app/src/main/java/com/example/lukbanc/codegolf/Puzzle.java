@@ -29,6 +29,8 @@ public class Puzzle {
     public int getPuzzleId(){return puzzleId;}
     public void setPuzzleId(int id){puzzleId = id;}
     public String getDescription(){return description;}
+    public void setDescription(String desc){description=desc;}
     public Date getCreatedDate(){return createdDate;}
     public String getPuzzleTitle(){return puzzleTitle;}
+    public void setPuzzleTitle(String title){puzzleTitle = title;}
 }
