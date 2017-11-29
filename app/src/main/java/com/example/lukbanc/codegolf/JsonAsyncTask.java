@@ -3,6 +3,7 @@ package com.example.lukbanc.codegolf;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedInputStream;
@@ -19,9 +20,11 @@ import java.net.URL;
 class JsonAsyncTask extends AsyncTask<String, Void, Boolean> {
 
     private JSONObject jsonObject = null;
+    private JSONArray jsonArray = null;
 
     public interface OnTaskCompleted {
         void onTaskCompleted(JSONObject result);
+        void onTaskCompleted(JSONArray result);
     }
 
     private OnTaskCompleted listener = null;
@@ -62,7 +65,13 @@ class JsonAsyncTask extends AsyncTask<String, Void, Boolean> {
             HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
             String content = readStream(in);
-            jsonObject = new JSONObject(content);
+            if(content.charAt(0)=='['){
+                // parse it as an array
+                jsonArray = new JSONArray(content);
+            }
+            else{
+                jsonObject = new JSONObject(content);
+            }
             return true;
 
         } catch (Exception e) {
@@ -73,7 +82,13 @@ class JsonAsyncTask extends AsyncTask<String, Void, Boolean> {
     }
 
     protected void onPostExecute(Boolean result) {
-        if(listener != null)
-            listener.onTaskCompleted(jsonObject);
+        if(listener != null) {
+            if(jsonObject != null){
+                listener.onTaskCompleted(jsonObject);
+            }
+            else if(jsonArray != null){
+                listener.onTaskCompleted(jsonArray);
+            }
+        }
     }
 }
