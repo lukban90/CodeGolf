@@ -126,10 +126,6 @@ public class SelectPuzzleActivity extends AppCompatActivity {
             // can't populate view yet...
             return;
         }
-        ArrayAdapter<Map.Entry<Integer, String>> adapter =
-                new ArrayAdapter<Map.Entry<Integer, String>>(this){
-
-                }
     }
 
     public void goBack(View v) {

@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.text.GetChars;
 import android.util.Log;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.Date;
@@ -254,20 +255,9 @@ public class DatabaseManager extends SQLiteOpenHelper {
                 }
             }
             @Override
-            public void onTaskCompleted(JSONObject result) {
+            public void onTaskCompleted(JSONArray result) {
                 if(result != null){
-                    Log.d("YAY","do something with the result.");
-                    Puzzle p = new Puzzle();
-                    try {
-                        p.setPuzzleId(result.getInt(COL_PUZZLE_ID));
-                        p.setPuzzleTitle(result.getString(COL_PUZZLE_TITLE));
-                        p.setDescription(result.getString(COL_PUZZLE_DESC));
-                    }
-                    catch (Exception e) {
-                    }
-                    String pInfo = String.format(Locale.ENGLISH,
-                            "(%d, %s, %s)", p.getPuzzleId(), p.getPuzzleTitle(), p.getDescription());
-                    Log.d("PUZZLE INFO", pInfo);
+                    return;
                 }
             }
         });
