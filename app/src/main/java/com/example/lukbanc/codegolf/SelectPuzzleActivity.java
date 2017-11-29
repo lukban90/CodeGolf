@@ -3,31 +3,25 @@ package com.example.lukbanc.codegolf;
 import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Entity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
-
+import android.widget.TextView;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Date;
 
 /**
  * Created by lukbanc on 11/2/17.
  */
 
 public class SelectPuzzleActivity extends AppCompatActivity {
-    private ListView listView;
-    private HashMap<Integer, String> puzzleMap = new HashMap<>();
-    private boolean puzzleIndexLoaded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,15 +63,14 @@ public class SelectPuzzleActivity extends AppCompatActivity {
                 if(result != null){
                     try {
                         int puzzleCount = result.length();
+                        Puzzle[] titles = new Puzzle[puzzleCount];
                         for (int i = 0; i < puzzleCount; i++) {
                             JSONObject obj = result.getJSONObject(i);
                             int id = obj.getInt(DatabaseManager.COL_PUZZLE_ID);
                             String title = obj.getString(DatabaseManager.COL_PUZZLE_TITLE);
-                            if(!puzzleMap.containsKey(id))
-                                puzzleMap.put(id, title);
-
+                            titles[i] = new Puzzle(id, title, "", new Date());
                         }
-                        puzzleIndexLoaded = true;
+                        populateListView(titles);
                     }
                     catch(Exception e){
                         Log.e("upDateView", e.toString());
@@ -86,45 +79,27 @@ public class SelectPuzzleActivity extends AppCompatActivity {
                 }
             }
         });
-
-        //Replace dummies with actual puzzles
-        String[] values = new String[] {"Chris is the best",
-                "Chirs is number one",
-                "Chirs is number one",
-                "Chirs is number one",
-                "Heroes for hire",
-                "Heroes for hire",
-                "Heroes for hire",
-                "Chirs is number one",
-                "Chirs is number one",
-                "Heroes for hire",
-                "Chirs is number one",
-                "Marvel buys Fox",
-                "Marvel buys Fox",
-                "Marvel buys Fox",
-                "Marvel buys Fox",
-                "Heroes for hire",
-                "Heroes for hire",
-                "Heroes for hire",
-                "Heroes for hire",
-                "Heroes for hire",
-                "Marvel buys Fox",
-                "Marvel buys Fox",
-                "Chirs is number one",
-                "Give me back FF4"};
-
-        ArrayAdapter<String> myAdapter = new ArrayAdapter<String>(this,
-                R.layout.activity_listview_sample,
-                values);
-
-        listView = (ListView)findViewById(R.id.list_puzzle_select);
-        listView.setAdapter(myAdapter);
     }
 
-    public void populateListView(){
-        if(!puzzleIndexLoaded){
-            // can't populate view yet...
-            return;
+    public void populateListView(Puzzle[] titles) {
+        final Context parent = this;
+        LinearLayout ll = (LinearLayout) findViewById(R.id.puzzle_list);
+        for (int i = 0; i < titles.length; i++) {
+            TextView tv = new TextView(this);
+            tv.setText(titles[i].getPuzzleTitle());
+            tv.setTextSize(30);
+            tv.setId(titles[i].getPuzzleId());
+            tv.setPadding(0, 20, 0, 20);
+            tv.setGravity(Gravity.CENTER);
+            tv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(parent, SolutionEditActivity.class);
+                    intent.putExtra(DatabaseManager.COL_PUZZLE_ID, view.getId());
+                    startActivity(intent);
+                }
+            });
+            ll.addView(tv);
         }
     }
 

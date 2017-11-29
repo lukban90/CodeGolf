@@ -20,9 +20,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by Kyle on 11/28/2017.
- */
 class JsonAsyncTask extends AsyncTask<String, Void, Boolean> {
 
     private JSONObject jsonObject = null;

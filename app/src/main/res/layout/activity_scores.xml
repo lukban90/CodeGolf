@@ -16,7 +16,6 @@
             android:paddingBottom="10dp"
             android:gravity="center"
             android:textSize="30sp"
-            android:text="@string/example_problem_title"
             />
         <TextView
             android:layout_width="match_parent"
@@ -36,18 +35,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                >
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:text="@string/bullet_example"
-                    />
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:text="@string/bullet_example"
-                    />
-            </LinearLayout>
+                />
         </ScrollView>
 
         <TextView
@@ -69,14 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                >
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="20dp"
-                    android:text="@string/bullet_example"
-                    />
-
-            </LinearLayout>
+                />
         </ScrollView>
 
         <Button
