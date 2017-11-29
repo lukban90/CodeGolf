@@ -227,6 +227,7 @@ public class DatabaseManager extends SQLiteOpenHelper {
     public static void fetchJson(String url, JsonAsyncTask.OnTaskCompleted onTaskCompleted){
         JsonAsyncTask task = new JsonAsyncTask();
         task.setTaskCompletedListener(onTaskCompleted);
+
         task.execute(url);
     }
 
@@ -235,6 +236,23 @@ public class DatabaseManager extends SQLiteOpenHelper {
         //selectPuzzleByIdTest(1);
 
         fetchJson(getSelectPuzzleByIdUrl(1), new JsonAsyncTask.OnTaskCompleted() {
+            @Override
+            public void onTaskCompleted(JSONObject result) {
+                if(result != null){
+                    Log.d("YAY","do something with the result.");
+                    Puzzle p = new Puzzle();
+                    try {
+                        p.setPuzzleId(result.getInt(COL_PUZZLE_ID));
+                        p.setPuzzleTitle(result.getString(COL_PUZZLE_TITLE));
+                        p.setDescription(result.getString(COL_PUZZLE_DESC));
+                    }
+                    catch (Exception e) {
+                    }
+                    String pInfo = String.format(Locale.ENGLISH,
+                            "(%d, %s, %s)", p.getPuzzleId(), p.getPuzzleTitle(), p.getDescription());
+                    Log.d("PUZZLE INFO", pInfo);
+                }
+            }
             @Override
             public void onTaskCompleted(JSONObject result) {
                 if(result != null){

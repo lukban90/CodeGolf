@@ -3,13 +3,22 @@ package com.example.lukbanc.codegolf;
 import android.app.SearchManager;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Entity;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.SearchView;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by lukbanc on 11/2/17.
@@ -17,6 +26,8 @@ import android.widget.SearchView;
 
 public class SelectPuzzleActivity extends AppCompatActivity {
     private ListView listView;
+    private HashMap<Integer, String> puzzleMap = new HashMap<>();
+    private boolean puzzleIndexLoaded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +54,38 @@ public class SelectPuzzleActivity extends AppCompatActivity {
         return true;
     }
 
+
+
     public void upDateView() {
+
+        String puzzleIndexUrl = "http://67.171.28.34/py/get_puzzle_index.py";
+        DatabaseManager.fetchJson(puzzleIndexUrl, new JsonAsyncTask.OnTaskCompleted() {
+            @Override
+            public void onTaskCompleted(JSONObject result) {
+                return;
+            }
+            @Override
+            public void onTaskCompleted(JSONArray result) {
+                if(result != null){
+                    try {
+                        int puzzleCount = result.length();
+                        for (int i = 0; i < puzzleCount; i++) {
+                            JSONObject obj = result.getJSONObject(i);
+                            int id = obj.getInt(DatabaseManager.COL_PUZZLE_ID);
+                            String title = obj.getString(DatabaseManager.COL_PUZZLE_TITLE);
+                            if(!puzzleMap.containsKey(id))
+                                puzzleMap.put(id, title);
+
+                        }
+                        puzzleIndexLoaded = true;
+                    }
+                    catch(Exception e){
+                        Log.e("upDateView", e.toString());
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
 
         //Replace dummies with actual puzzles
         String[] values = new String[] {"Chris is the best",
@@ -77,6 +119,17 @@ public class SelectPuzzleActivity extends AppCompatActivity {
 
         listView = (ListView)findViewById(R.id.list_puzzle_select);
         listView.setAdapter(myAdapter);
+    }
+
+    public void populateListView(){
+        if(!puzzleIndexLoaded){
+            // can't populate view yet...
+            return;
+        }
+        ArrayAdapter<Map.Entry<Integer, String>> adapter =
+                new ArrayAdapter<Map.Entry<Integer, String>>(this){
+
+                }
     }
 
     public void goBack(View v) {

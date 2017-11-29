@@ -11,8 +11,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.AbstractMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Kyle on 11/28/2017.
@@ -22,15 +28,29 @@ class JsonAsyncTask extends AsyncTask<String, Void, Boolean> {
     private JSONObject jsonObject = null;
     private JSONArray jsonArray = null;
 
+    public static final String REQUEST_METHOD_GET = "GET";
+    public static final String REQUEST_METHOD_POST = "POST";
+    private String requestMethod = REQUEST_METHOD_GET;
+
     public interface OnTaskCompleted {
         void onTaskCompleted(JSONObject result);
         void onTaskCompleted(JSONArray result);
+    }
+
+    private String postData;
+
+    public void setRequestMethod(String method){
+        requestMethod = method;
     }
 
     private OnTaskCompleted listener = null;
 
     public void setTaskCompletedListener(OnTaskCompleted listener){
         this.listener = listener;
+    }
+
+    public void setPostData(String postData){
+
     }
 
     protected void onPreExecute() {
@@ -63,6 +83,17 @@ class JsonAsyncTask extends AsyncTask<String, Void, Boolean> {
             String urlString = urls[0];
             URL url = new URL(urlString);
             HttpURLConnection urlConnection = (HttpURLConnection)url.openConnection();
+            urlConnection.setRequestMethod(requestMethod);
+
+            if(requestMethod.equals(REQUEST_METHOD_POST)){
+                int len = postData.length();
+                urlConnection.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+                urlConnection.setRequestProperty("Content-Length", String.valueOf(len));
+                urlConnection.setDoOutput(true);
+                OutputStream outStream = urlConnection.getOutputStream();
+                outStream.write(postData.getBytes());
+            }
+
             InputStream in = new BufferedInputStream(urlConnection.getInputStream());
             String content = readStream(in);
             if(content.charAt(0)=='['){
