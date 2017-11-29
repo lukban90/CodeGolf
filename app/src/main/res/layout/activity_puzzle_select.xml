@@ -22,6 +22,8 @@
         android:paddingBottom="20dp"
         android:text="@string/activity_name_puzzle_select"
         android:textSize="30sp"
+        android:background="@color/colorDarkGrey"
+        android:textColor="@color/colorWhite"
         style="@style/Base.Animation.AppCompat.Tooltip"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
