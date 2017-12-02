@@ -104,7 +104,8 @@
         <ScrollView
             android:layout_below="@id/soln_scroll"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            >
             <TextView
                 android:id="@+id/output"
                 android:singleLine="false"
