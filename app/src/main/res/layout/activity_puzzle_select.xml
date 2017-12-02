@@ -36,6 +36,7 @@
         android:layout_height = "2dp"
         />
 
+    <!--
     <ScrollView
         android:id="@+id/puzzle_scroll"
         android:layout_width="match_parent"
@@ -47,15 +48,13 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             />
-    </ScrollView>
+    </ScrollView>-->
 
-    <!--
     <ListView
-        android:id="@+id/list_puzzle_select"
+        android:id="@+id/list_view_puzzle_select"
         android:layout_width="wrap_content"
         android:layout_height="match_parent">
     </ListView>
-    -->
     <!-- TODO: use ListView, @+id/list_puzzle_select -->
     <!--<RadioGroup-->
         <!--android:id="@+id/radio_group"-->
