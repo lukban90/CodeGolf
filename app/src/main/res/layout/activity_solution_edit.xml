@@ -28,7 +28,6 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
-            <!--android:onClick="openKeyoard"/>-->
 
 
         <TextView
@@ -91,7 +90,7 @@
             android:id="@+id/soln_scroll"
             android:layout_below="@id/kb_default"
             android:layout_width="match_parent"
-            android:layout_height="300dp">
+            android:layout_height="320dp">
             <EditText
                 android:id="@+id/puzzle_soln"
                 android:layout_below="@+id/kb_custom"
@@ -99,8 +98,8 @@
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
-                android:lines="100"
-                android:inputType="text"/>
+                android:inputType="textMultiLine"
+                />
         </ScrollView>
         <ScrollView
             android:layout_below="@id/soln_scroll"
@@ -111,8 +110,6 @@
                 android:singleLine="false"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:lines="100"
-                android:maxLines="100"
                 />
         </ScrollView>
 
