@@ -20,6 +20,11 @@ public class MainActivity extends AppCompatActivity {
         Button btnSelectPuzzle = (Button)findViewById(R.id.btn_puzzle_select);
     }
 
+    public void switchToLogin(View v) {
+        Intent myIntent = new Intent(this, LoginActivity.class);
+        this.startActivity(myIntent);
+    }
+
     public void switchToPuzzleSelect(View v){
         Intent myIntent = new Intent(this, SelectPuzzleActivity.class);
         this.startActivity(myIntent);
