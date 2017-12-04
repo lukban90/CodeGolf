@@ -1,0 +1,115 @@
+Index: app/src/main/java/com/example/lukbanc/codegolf/SolutionEditActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.lukbanc.codegolf;\n\nimport android.app.Activity;\nimport android.app.SearchManager;\nimport android.content.Intent;\nimport android.inputmethodservice.Keyboard;\nimport android.inputmethodservice.KeyboardView;\nimport android.support.v7.app.AppCompatActivity;\nimport android.os.Bundle;\nimport android.text.InputType;\nimport android.util.Log;\nimport android.view.MotionEvent;\nimport android.view.View;\nimport android.view.inputmethod.InputMethodManager;\nimport android.widget.EditText;\nimport android.widget.RelativeLayout;\nimport android.widget.TextView;\nimport android.widget.Toast;\n\nimport org.json.JSONArray;\nimport org.json.JSONObject;\n\nimport java.net.URLEncoder;\nimport java.util.Date;\nimport java.util.Locale;\n\nimport static com.example.lukbanc.codegolf.DatabaseManager.COL_PUZZLE_ID;\nimport static com.example.lukbanc.codegolf.DatabaseManager.COL_SOLUTION_TEXT;\n\npublic class SolutionEditActivity extends AppCompatActivity {\n\n    DatabaseManager dbm;\n    int puzzleId;\n\n    @Override\n    protected void onCreate(Bundle savedInstanceState) {\n        super.onCreate(savedInstanceState);\n        setContentView(R.layout.activity_solution_edit);\n\n        puzzleId = getIntent().getIntExtra(COL_PUZZLE_ID, 0);\n        dbm = new DatabaseManager(this);\n\n\n        //add layout here\n        setContentView(R.layout.activity_solution_edit);\n        handleIntent(getIntent());\n\n        // Create the keyboard\n        keyboard = new Keyboard(this, R.xml.keyboard);\n        keyboardView = (KeyboardView)findViewById(R.id.keyboardview);\n        keyboardView.setKeyboard( keyboard );\n\n        //registerEditText(R.id.puzzle_soln);\n\n        //keyboardView.setOnKeyboardActionListener(myKeyboardActionListener);\n        updateView();\n    }\n\n    public void updateView() {\n        String url = dbm.getSelectPuzzleByIdUrl(puzzleId);\n        dbm.fetchJson(url, new JsonAsyncTask.OnTaskCompleted() {\n            @Override\n            public void onTaskCompleted(JSONObject result) {\n                if(result != null){\n                    Log.d(\"YAY\",\"do something with the result.\");\n                    Puzzle p = new Puzzle();\n                    try {\n                        p.setPuzzleId(result.getInt(COL_PUZZLE_ID));\n                        p.setPuzzleTitle(result.getString(DatabaseManager.COL_PUZZLE_TITLE));\n                        p.setDescription(result.getString(DatabaseManager.COL_PUZZLE_DESC));\n                        p.setTargFuncName(result.getString(DatabaseManager.COL_TARG_FUNC_NAME));\n                    }\n                    catch (Exception e) {\n                    }\n                    String pInfo = String.format(Locale.ENGLISH,\n                            \"(%d, %s, %s)\", p.getPuzzleId(), p.getPuzzleTitle(), p.getDescription());\n                    Log.d(\"PUZZLE INFO\", pInfo);\n\n                    populatePuzzleText(p);\n                }\n            }\n            @Override\n            public void onTaskCompleted(JSONArray result) {\n                if(result != null){\n                    return;\n                }\n            }\n        });\n    }\n\n    public void onSubmit(View view){\n        sendSolution();\n    }\n\n    public void populatePuzzleText(Puzzle puzzle) {\n        TextView nameTV  = (TextView) findViewById(R.id.puzzle_problem);\n        TextView titleTV = (TextView) findViewById(R.id.title);\n        TextView funcNameTv = (TextView) findViewById(R.id.val_target_function);\n        funcNameTv.setText(puzzle.getTargFuncName());\n        titleTV.setText(puzzle.getPuzzleTitle());\n        nameTV.setText(puzzle.getDescription());\n    }\n\n    public void sendSolution() {\n        EditText et = findViewById(R.id.puzzle_soln);\n\n        String solText = et.getText().toString();\n        String baseUrl = \"http://67.171.28.34/py/submit_solution.py\";\n\n        String encoded = URLEncoder.encode(solText);\n        String url = String.format(\"%s?%s=%s&%s=%s\",baseUrl, DatabaseManager.COL_PUZZLE_ID, puzzleId, DatabaseManager.COL_SOLUTION_TEXT, encoded);\n\n        Log.d(\"URL: \",url);\n\n        dbm.fetchJson(url, new JsonAsyncTask.OnTaskCompleted() {\n            @Override\n            public void onTaskCompleted(JSONObject result) {\n                if(result != null){\n                    Log.d(\"YAY\",\"do something with the result.\");\n                    try {\n                        String output = result.getString(\"output\");\n                        displayResult(output);\n                    }catch (Exception e){\n                        Log.e(\"task complete\", e.toString());\n                    }\n                }\n            }\n            @Override\n            public void onTaskCompleted(JSONArray result) {\n                if(result != null){\n                    return;\n                }\n            }\n        });\n    }\n\n    public void displayResult(String output) {\n        RelativeLayout wrapper = findViewById(R.id.wrapper);\n        TextView tv = findViewById(R.id.output);\n\n        //textView.setText(Html.fromHtml(Html.fromHtml(text).toString()))\n        tv.setText(output);\n    }\n\n    private Keyboard keyboard;\n    private KeyboardView keyboardView;\n\n    // onClick to open keyboard\n    public void openKeyoard(View v) {\n        keyboardView.setVisibility(View.VISIBLE);\n        keyboardView.setEnabled(true);\n        if(v != null) {\n            ((InputMethodManager) getSystemService(\n                    Activity.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(\n                    v.getWindowToken(), 0);\n\n            //registerEditText(R.id.puzzle_soln);\n        }\n    }\n\n    // register EditText to the keyboard\n    public void registerEditText(int resId) {\n        EditText editText = (EditText)findViewById(resId);\n\n        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {\n            @Override\n            public void onFocusChange(View view, boolean hasFocus) {\n                if(hasFocus)\n                    showCustomKeyboard(view);\n                else\n                    hideCustomKeyboard();\n            }\n        });\n        editText.setOnClickListener(new View.OnClickListener() {\n            @Override\n            public void onClick(View view) {\n                showCustomKeyboard(view);\n            }\n        });\n        editText.setOnTouchListener(new View.OnTouchListener() {\n            @Override public boolean onTouch(View v, MotionEvent event) {\n                EditText edittext = (EditText) v;\n                int inType = edittext.getInputType();       // Backup the input type\n                edittext.setInputType(InputType.TYPE_NULL); // Disable standard keyboard\n                edittext.onTouchEvent(event);               // Call native handler\n                edittext.setInputType(inType);              // Restore input type\n                return true; // Consume touch event\n            }\n        });\n        // Disable spell check (hex strings look like words to Android)\n        editText.setInputType( editText.getInputType() | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS );\n    }\n\n    // helpers to hide/show/check customboard\n    public void hideCustomKeyboard() {\n        keyboardView.setVisibility(View.GONE);\n        keyboardView.setEnabled(false);\n    }\n\n    public void showCustomKeyboard( View v ) {\n        keyboardView.setVisibility(View.VISIBLE);\n        keyboardView.setEnabled(true);\n        if( v!=null ) ((InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(v.getWindowToken(), 0);\n    }\n\n    public boolean isCustomKeyboardVisible() {\n        return keyboardView.getVisibility() == View.VISIBLE;\n    }\n\n    // Functionality of the keyboard\n    private KeyboardView.OnKeyboardActionListener myKeyboardActionListener =\n            new KeyboardView.OnKeyboardActionListener() {\n                @Override\n                public void onPress(int i) {\n\n                }\n\n                @Override\n                public void onRelease(int i) {\n\n                }\n\n                @Override\n                public void onKey(int i, int[] ints) {\n\n                }\n\n                @Override\n                public void onText(CharSequence charSequence) {\n\n                }\n\n                @Override\n                public void swipeLeft() {\n\n                }\n\n                @Override\n                public void swipeRight() {\n\n                }\n\n                @Override\n                public void swipeDown() {\n\n                }\n\n                @Override\n                public void swipeUp() {\n\n                }\n            };\n\n    public void goBack(View v) {\n        this.finish();\n    }\n\n    @Override\n    protected void onNewIntent(Intent intent) {\n        handleIntent(intent);\n    }\n\n    private void handleIntent(Intent intent) {\n\n        if(Intent.ACTION_SEARCH.equals(intent.getAction())) {\n            String query = intent.getStringExtra(SearchManager.QUERY);\n            Toast.makeText(SolutionEditActivity.this, query, Toast.LENGTH_LONG).show();\n        }\n    }\n\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/lukbanc/codegolf/SolutionEditActivity.java	(revision c41b7987e9ac73eeb3424dd4d87e18e15b6d9828)
++++ app/src/main/java/com/example/lukbanc/codegolf/SolutionEditActivity.java	
+@@ -11,6 +11,7 @@
+ import android.util.Log;
+ import android.view.MotionEvent;
+ import android.view.View;
++import android.view.inputmethod.InputConnection;
+ import android.view.inputmethod.InputMethodManager;
+ import android.widget.EditText;
+ import android.widget.RelativeLayout;
+@@ -154,7 +155,9 @@
+                     Activity.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(
+                     v.getWindowToken(), 0);
+ 
+-            //registerEditText(R.id.puzzle_soln);
++            registerEditText(R.id.puzzle_soln);
++
++            keyboardView.setOnKeyboardActionListener(myKeyboardActionListener);
+         }
+     }
+ 
+@@ -213,6 +216,23 @@
+                 @Override
+                 public void onPress(int i) {
+ 
++//                    EditText dummy = (EditText) findViewById( R.id.puzzle_soln );
++//                    //dummy.setText("Hello: " + i);
++//                    switch (i) {
++//
++//                        case 65: //def
++//                            dummy.setText("def");
++//                            break;
++//
++//                        case 66: // print
++//                            dummy.setText("print");
++//                            break;
++//
++//                        default:
++//                            dummy.setText("" + i);
++//                            break;
++//                    }
++
+                 }
+ 
+                 @Override
+@@ -223,6 +243,14 @@
+                 @Override
+                 public void onKey(int i, int[] ints) {
+ 
++                    switch ( i ) {
++
++                        default:
++                            char code = (char) i;
++
++
++                    }
++
+                 }
+ 
+                 @Override
+Index: app/src/main/java/com/example/lukbanc/codegolf/SearchResultsActivity.java
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>package com.example.lukbanc.codegolf;\n\nimport android.app.Activity;\nimport android.app.SearchManager;\nimport android.content.Intent;\nimport android.inputmethodservice.Keyboard;\nimport android.inputmethodservice.KeyboardView;\nimport android.os.Bundle;\nimport android.support.v7.app.AppCompatActivity;\nimport android.text.InputType;\nimport android.view.MotionEvent;\nimport android.view.View;\nimport android.view.inputmethod.InputMethodManager;\nimport android.widget.EditText;\nimport android.widget.TextView;\nimport android.widget.Toast;\n\n/**\n * Created by lukbanc on 11/7/17.\n */\n\npublic class SearchResultsActivity extends AppCompatActivity {\n    private Keyboard keyboard;\n    private KeyboardView keyboardView;\n\n    @Override\n    public void onCreate(Bundle savedInstanceState) {\n        super.onCreate(savedInstanceState);\n\n        //add layout here\n        setContentView(R.layout.activity_solution_edit);\n        handleIntent(getIntent());\n\n        // Create the keyboard\n        keyboard = new Keyboard(this, R.xml.keyboard);\n        keyboardView = (KeyboardView)findViewById(R.id.keyboardview);\n        keyboardView.setKeyboard( keyboard );\n\n        registerEditText(R.id.puzzle_soln);\n\n        keyboardView.setOnKeyboardActionListener(myKeyboardActionListener);\n    }\n\n    // onClick to open keyboard\n    public void openKeyoard(View v) {\n        keyboardView.setVisibility(View.VISIBLE);\n        keyboardView.setEnabled(true);\n        if(v != null) {\n            ((InputMethodManager) getSystemService(\n                    Activity.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(\n                    v.getWindowToken(), 0);\n\n        }\n    }\n\n    // register EditText to the keyboard\n    public void registerEditText(int resId) {\n        EditText editText = (EditText)findViewById(resId);\n\n        editText.setOnFocusChangeListener(new View.OnFocusChangeListener() {\n            @Override\n            public void onFocusChange(View view, boolean hasFocus) {\n                if(hasFocus)\n                    showCustomKeyboard(view);\n                else\n                    hideCustomKeyboard();\n            }\n        });\n        editText.setOnClickListener(new View.OnClickListener() {\n            @Override\n            public void onClick(View view) {\n                showCustomKeyboard(view);\n            }\n        });\n        editText.setOnTouchListener(new View.OnTouchListener() {\n            @Override public boolean onTouch(View v, MotionEvent event) {\n                EditText edittext = (EditText) v;\n                int inType = edittext.getInputType();       // Backup the input type\n                edittext.setInputType(InputType.TYPE_NULL); // Disable standard keyboard\n                edittext.onTouchEvent(event);               // Call native handler\n                edittext.setInputType(inType);              // Restore input type\n                return true; // Consume touch event\n            }\n        });\n        // Disable spell check (hex strings look like words to Android)\n        editText.setInputType( editText.getInputType() | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS );\n    }\n\n    // helpers to hide/show/check customboard\n    public void hideCustomKeyboard() {\n        keyboardView.setVisibility(View.GONE);\n        keyboardView.setEnabled(false);\n    }\n\n    public void showCustomKeyboard( View v ) {\n        keyboardView.setVisibility(View.VISIBLE);\n        keyboardView.setEnabled(true);\n        if( v!=null ) ((InputMethodManager)getSystemService(Activity.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(v.getWindowToken(), 0);\n    }\n\n    public boolean isCustomKeyboardVisible() {\n        return keyboardView.getVisibility() == View.VISIBLE;\n    }\n    // end of helpers to hide/show/check customboard\n\n    // Functionality of the keyboard\n    private KeyboardView.OnKeyboardActionListener myKeyboardActionListener =\n            new KeyboardView.OnKeyboardActionListener() {\n                @Override\n                public void onPress(int i) {\n                    EditText dummy = (EditText) findViewById( R.id.puzzle_soln );\n                    //dummy.setText(\"Hello: \" + i);\n                    switch (i) {\n\n                        case 65: //def\n                            dummy.setText(\"def\");\n                            break;\n\n                        case 66: // print\n                            dummy.setText(\"print\");\n                            break;\n\n                        default:\n                            dummy.setText(\"\" + i);\n                            break;\n                    }\n                }\n\n                @Override\n                public void onRelease(int i) {\n\n                }\n\n                @Override\n                public void onKey(int i, int[] ints) {\n\n                }\n\n                @Override\n                public void onText(CharSequence charSequence) {\n\n                }\n\n                @Override\n                public void swipeLeft() {\n\n                }\n\n                @Override\n                public void swipeRight() {\n\n                }\n\n                @Override\n                public void swipeDown() {\n\n                }\n\n                @Override\n                public void swipeUp() {\n\n                }\n            };\n\n    public void updateView() {}\n\n    public void goBack(View v) {\n        this.finish();\n    }\n\n    @Override\n    protected void onNewIntent(Intent intent) {\n        handleIntent(intent);\n    }\n\n    private void handleIntent(Intent intent) {\n\n        if(Intent.ACTION_SEARCH.equals(intent.getAction())) {\n            String query = intent.getStringExtra(SearchManager.QUERY);\n            Toast.makeText(SearchResultsActivity.this, query, Toast.LENGTH_LONG).show();\n        }\n    }\n\n}\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/java/com/example/lukbanc/codegolf/SearchResultsActivity.java	(revision c41b7987e9ac73eeb3424dd4d87e18e15b6d9828)
++++ app/src/main/java/com/example/lukbanc/codegolf/SearchResultsActivity.java	
+@@ -108,22 +108,22 @@
+             new KeyboardView.OnKeyboardActionListener() {
+                 @Override
+                 public void onPress(int i) {
+-                    EditText dummy = (EditText) findViewById( R.id.puzzle_soln );
+-                    //dummy.setText("Hello: " + i);
+-                    switch (i) {
+-
+-                        case 65: //def
+-                            dummy.setText("def");
+-                            break;
+-
+-                        case 66: // print
+-                            dummy.setText("print");
+-                            break;
+-
+-                        default:
+-                            dummy.setText("" + i);
+-                            break;
+-                    }
++//                    EditText dummy = (EditText) findViewById( R.id.puzzle_soln );
++//                    //dummy.setText("Hello: " + i);
++//                    switch (i) {
++//
++//                        case 65: //def
++//                            dummy.setText("def");
++//                            break;
++//
++//                        case 66: // print
++//                            dummy.setText("print");
++//                            break;
++//
++//                        default:
++//                            dummy.setText("" + i);
++//                            break;
++//                    }
+                 }
+ 
+                 @Override

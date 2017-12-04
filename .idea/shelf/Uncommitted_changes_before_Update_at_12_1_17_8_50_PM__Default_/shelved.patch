@@ -1,0 +1,21 @@
+Index: app/src/main/res/menu/menu_select_puzzle.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+--- app/src/main/res/menu/menu_select_puzzle.xml	(revision b4b15bd2ccbbad732e73a7a624d15c999484790b)
++++ app/src/main/res/menu/menu_select_puzzle.xml	(revision b4b15bd2ccbbad732e73a7a624d15c999484790b)
+@@ -1,12 +0,0 @@
+-<menu xmlns:android="http://schemas.android.com/apk/res/android"
+-    xmlns:app="http://schemas.android.com/apk/res-auto"
+-    xmlns:tools="http://schemas.android.com/tools"
+-    tools:context="com.example.lukbanc.csci412_assignment3.SelectPuzzleActivity">
+-
+-    <item android:id="@+id/action_search"
+-        android:title="@string/search"
+-        android:icon="@android:drawable/ic_menu_search"
+-        app:showAsAction="ifRoom"
+-        app:actionViewClass="android.widget.SearchView"/>
+-
+-</menu>
+\ No newline at end of file
