@@ -62,22 +62,22 @@ public class SelectPuzzleActivity extends AppCompatActivity {
         upDateView();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_select_puzzle, menu);
-
-        //create searchable configuration with the SearchView
-        //Credit mainly given Android App Development with minor tweaks
-        SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
-                (SearchView) menu.findItem(R.id.action_search).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(
-                new ComponentName(this, SearchResultsActivity.class)) );
-
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.menu_select_puzzle, menu);
+//
+//        //create searchable configuration with the SearchView
+//        //Credit mainly given Android App Development with minor tweaks
+//        SearchManager searchManager =
+//                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+//        SearchView searchView =
+//                (SearchView) menu.findItem(R.id.action_search).getActionView();
+//        searchView.setSearchableInfo(searchManager.getSearchableInfo(
+//                new ComponentName(this, SearchResultsActivity.class)) );
+//
+//        return true;
+//    }
 
     public Date parseIso8601(String isoDate){
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
