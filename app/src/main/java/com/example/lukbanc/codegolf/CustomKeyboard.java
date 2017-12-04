@@ -125,7 +125,6 @@ public class CustomKeyboard {
         kbView.setVisibility(View.VISIBLE);
         kbView.setEnabled(true);
         if( v!=null ) ((InputMethodManager)hostActivity.getSystemService(Activity.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(v.getWindowToken(), 0);
-//        if( v!= null ) ( (InputMethodManager)getSys )
     }
 
     public boolean isCustomKeyboardVisible() {
