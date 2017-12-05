@@ -1,23 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
     android:keyWidth="15%p"
-    android:keyHeight="15%p" >
+    android:keyHeight="10%p" >
 
     <Row>
-        <Key android:keyLabel="def" android:codes="65"/>
-        <Key android:keyLabel="print"   android:codes="66" android:horizontalGap="4%p"/>
-        <Key android:keyLabel="return"  android:codes="67" android:horizontalGap="4%p"/>
+        <Key android:keyLabel="def"     android:codes="5500"/>
+        <Key android:keyLabel="print"   android:codes="5501" />
+        <Key android:keyLabel="lambda"  android:codes="5502" />
+        <Key android:keyLabel="return"  android:codes="5503" />
     </Row>
 
     <Row>
-        <Key android:codes="-1"
-            android:keyLabel="Back"
-            android:keyWidth="30%p"/>
+        <Key android:keyLabel="while"   android:codes="5504" />
+        <Key android:keyLabel="for"     android:codes="5505" />
+        <Key android:keyLabel="in"      android:codes="5506" />
+        <Key android:keyLabel="if"      android:codes="5507" />
+    </Row>
 
-        <Key android:codes="100"
-            android:keyLabel="Enter"
-            android:keyWidth="50%p"
-            android:horizontalGap="4%p"/>
+    <Row>
+        <Key android:keyLabel="else"    android:codes="5508" />
+        <Key android:keyLabel="elif"    android:codes="5509" />
+        <Key android:keyLabel="true"    android:codes="5510" />
+        <Key android:keyLabel="false"    android:codes="5511" />
     </Row>
 
 </Keyboard>

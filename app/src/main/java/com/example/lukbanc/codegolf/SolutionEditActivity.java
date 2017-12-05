@@ -2,6 +2,7 @@ package com.example.lukbanc.codegolf;
 
 import android.app.Activity;
 import android.app.SearchManager;
+import android.content.Context;
 import android.content.Intent;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
@@ -11,6 +12,7 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
@@ -33,10 +35,14 @@ public class SolutionEditActivity extends AppCompatActivity {
     private CustomKeyboard customKeyboard;
     int puzzleId;
 
+    public static EditText solnEditText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_solution_edit);
+
+        solnEditText = findViewById( R.id.puzzle_soln );
 
         puzzleId = getIntent().getIntExtra(COL_PUZZLE_ID, 0);
         dbm = new DatabaseManager(this);
@@ -139,9 +145,23 @@ public class SolutionEditActivity extends AppCompatActivity {
         tv.setText(output);
     }
 
-    // onClick to open keyboard
-    public void openKeyboard(View v) {
+    public static EditText getEditText() {
+        return solnEditText;
+    }
+
+    // onClick to open custom keyboard
+    public void onCustomKeyboard( View v ) {
         customKeyboard.openKeyboard( v );
+    }
+
+    // onClick to open default keyboard
+    public void onDefaultKeyboard( View v ) {
+        if(v != null) {
+            InputMethodManager imm = (InputMethodManager)
+                    getSystemService( Context.INPUT_METHOD_SERVICE );
+
+            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+        }
     }
 
     public void goBack(View v) {
