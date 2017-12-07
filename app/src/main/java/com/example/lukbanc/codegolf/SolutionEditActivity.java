@@ -35,14 +35,10 @@ public class SolutionEditActivity extends AppCompatActivity {
     private CustomKeyboard customKeyboard;
     int puzzleId;
 
-    public static EditText solnEditText;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_solution_edit);
-
-        solnEditText = findViewById( R.id.puzzle_soln );
 
         puzzleId = getIntent().getIntExtra(COL_PUZZLE_ID, 0);
         dbm = new DatabaseManager(this);
@@ -143,10 +139,6 @@ public class SolutionEditActivity extends AppCompatActivity {
 
         //textView.setText(Html.fromHtml(Html.fromHtml(text).toString()))
         tv.setText(output);
-    }
-
-    public static EditText getEditText() {
-        return solnEditText;
     }
 
     // onClick to open custom keyboard
