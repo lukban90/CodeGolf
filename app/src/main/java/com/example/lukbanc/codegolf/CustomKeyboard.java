@@ -38,6 +38,24 @@ public class CustomKeyboard {
     private final static int TRUE = 5510;
     private final static int FALSE = 5511;
 
+    private final static int ENTER = 5512; // newline
+    private final static int INDENT = 5513; // 4-spaces
+    private final static int BACKSPACE = 5514; // -- 4-spaces
+
+    private final static int NAV_RIGHT = 5515;
+    private final static int NAV_LEFT = 5516;
+    private final static int SPACE = 5517;
+    private final static int K_HASHTAG = 5518;
+    private final static int K_QUESTION = 5519;
+    private final static int K_PAREN_OPEN = 5520;
+    private final static int K_PAREN_CLOSE = 5521;
+    private final static int K_BRACKET_OPEN = 5522;
+    private final static int K_BRACKET_CLOSE = 5523;
+    private final static int K_COLON = 5524;
+    private final static int K_PERIOD = 5525;
+    private final static int K_QUOTE = 5526;
+    private final static int K_APOSTROPHE = 5527;
+
     // Functionality of the keyboard
     private KeyboardView.OnKeyboardActionListener myKeyboardActionListener =
             new KeyboardView.OnKeyboardActionListener() {
@@ -51,105 +69,130 @@ public class CustomKeyboard {
 
                 }
 
+                public void insertSeq(Editable ed, int pos, String seq){
+                    // adds the text in reverse to editable
+                    for(int i=seq.length()-1;i>=0;i--){
+                        ed.insert(pos, String.valueOf(seq.charAt(i)));
+                    }
+                }
+
                 @Override
                 public void onKey(int primaryCode, int[] keyCodes) {
-                    EditText focusCurrent = (EditText)hostActivity.findViewById( R.id.puzzle_soln );
+                    try {
+                        EditText focusCurrent = (EditText) hostActivity.findViewById(R.id.puzzle_soln);
 
-                    if( focusCurrent == null || focusCurrent.getClass() == EditText.class ) return;
+                        if (focusCurrent == null || focusCurrent.getClass() == EditText.class)
+                            return;
 
-                    EditText editText = (EditText)focusCurrent;
-                    Editable editable = editText.getText();
-                    int start = editText.getSelectionStart();
+                        EditText editText = (EditText) focusCurrent;
+                        Editable editable = editText.getText();
+                        int start = editText.getSelectionStart();
 
-                    if( primaryCode == DEF ) {
-                        editable.insert( start, " " );
-                        editable.insert( start, "f" );
-                        editable.insert( start, "e" );
-                        editable.insert( start, "d" );
+                        switch (primaryCode) {
+                            case DEF:
+                                insertSeq(editable, start, "def ");
+                                break;
+                            case PRINT:
+                                insertSeq(editable, start, "print(");
+                                break;
+                            case LAMBDA:
+                                insertSeq(editable, start, "lambda ");
+                            case RETURN:
+                                insertSeq(editable, start, "return ");
+                                break;
+                            case WHILE:
+                                insertSeq(editable, start, "while ");
+                                break;
+                            case FOR:
+                                insertSeq(editable, start, "for ");
+                                break;
+                            case IN:
+                                insertSeq(editable, start, "in ");
+                                break;
+                            case IF:
+                                insertSeq(editable, start, "if ");
+                                break;
 
-                    } else if( primaryCode == PRINT ) {
-                        editable.insert( start, "t" );
-                        editable.insert( start, "n" );
-                        editable.insert( start, "i" );
-                        editable.insert( start, "r" );
-                        editable.insert( start, "p" );
+                            case ELSE:
+                                insertSeq(editable, start, "else");
+                                break;
+                            case ELIF:
+                                insertSeq(editable, start, "elif ");
+                                break;
+                            case TRUE:
+                                insertSeq(editable, start, "True");
+                                break;
+                            case FALSE:
+                                insertSeq(editable, start, "False");
+                                break;
+                            case ENTER:
+                                insertSeq(editable, start, "<br/>");
+                            case INDENT:
+                                // insert 4 spaces
+                                insertSeq(editable, start, "    ");
+                                break;
+                            case SPACE:
+                                insertSeq(editable, start, " ");
+                                break;
+                            case BACKSPACE:
+                                // remove last 4 chars (or less if not 4 to delete)
+                                int toRemove = 1;
+                                if(start >= toRemove)
+                                    editable.replace(start - toRemove, start, "");
+                                break;
+                            case NAV_LEFT:
+                                // move cursor left
+                                if (editText.getSelectionStart() > 0) ;
+                                editText.setSelection(editText.getSelectionStart() - 1);
+                                break;
+                            case NAV_RIGHT:
+                                // remove right
+                                if (editText.getSelectionStart() < editText.length() - 3) ;
+                                editText.setSelection(editText.getSelectionStart() + 1);
+                                break;
+                            case K_APOSTROPHE:
+                                insertSeq(editable, start, "'");
+                                break;
+                            case K_BRACKET_CLOSE:
+                                insertSeq(editable, start, "]");
+                                break;
+                            case K_BRACKET_OPEN:
+                                insertSeq(editable, start, "[");
+                                break;
+                            case K_COLON:
+                                insertSeq(editable, start, ":");
+                                break;
+                            case K_HASHTAG:
+                                insertSeq(editable, start, "[");
+                                break;
+                            case K_PAREN_OPEN:
+                                insertSeq(editable, start, "(");
+                                break;
+                            case K_PAREN_CLOSE:
+                                insertSeq(editable, start, ")");
+                                break;
+                            case K_PERIOD:
+                                insertSeq(editable, start, ".");
+                                break;
+                            case K_QUESTION:
+                                insertSeq(editable, start, "?");
+                                break;
+                            case K_QUOTE:
+                                insertSeq(editable, start, "\"");
+                                break;
 
-                    } else if( primaryCode == LAMBDA ) {
-                        editable.insert( start, " " );
-                        editable.insert( start, "a" );
-                        editable.insert( start, "d" );
-                        editable.insert( start, "b" );
-                        editable.insert( start, "m" );
-                        editable.insert( start, "a" );
-                        editable.insert( start, "l" );
-
-                    } else if( primaryCode == RETURN ) {
-                        editable.insert( start, " " );
-                        editable.insert( start, "n" );
-                        editable.insert( start, "r" );
-                        editable.insert( start, "u" );
-                        editable.insert( start, "t" );
-                        editable.insert( start, "e" );
-                        editable.insert( start, "r" );
-
-                    } else if( primaryCode == WHILE ) {
-                        editable.insert( start, " " );
-                        editable.insert( start, "e" );
-                        editable.insert( start, "l" );
-                        editable.insert( start, "i" );
-                        editable.insert( start, "h" );
-                        editable.insert( start, "w" );
-
-                    } else if( primaryCode == FOR ) {
-                        editable.insert( start, " " );
-                        editable.insert( start, "r" );
-                        editable.insert( start, "o" );
-                        editable.insert( start, "f" );
-
-                    } else if( primaryCode == IN ) {
-                        editable.insert( start, " " );
-                        editable.insert( start, "n" );
-                        editable.insert( start, "i" );
-
-                    } else if( primaryCode == IF ) {
-                        editable.insert( start, " " );
-                        editable.insert( start, "f" );
-                        editable.insert( start, "i" );
-
-                    } else if( primaryCode == ELSE ) {
-                        editable.insert(start, " ");
-                        editable.insert(start, "e");
-                        editable.insert(start, "s");
-                        editable.insert(start, "l");
-                        editable.insert(start, "e");
-
-                    } else if( primaryCode == ELIF ) {
-                        editable.insert( start, " " );
-                        editable.insert( start, "f" );
-                        editable.insert( start, "i" );
-                        editable.insert( start, "l" );
-                        editable.insert( start, "e" );
-
-                    } else if( primaryCode == TRUE ) {
-                        editable.insert( start, " " );
-                        editable.insert( start, "e" );
-                        editable.insert( start, "u" );
-                        editable.insert( start, "r" );
-                        editable.insert( start, "t" );
-
-                    } else if( primaryCode == FALSE ) {
-                        editable.insert( start, " " );
-                        editable.insert( start, "e" );
-                        editable.insert( start, "s" );
-                        editable.insert( start, "l" );
-                        editable.insert( start, "a" );
-                        editable.insert( start, "f" );
+                        }
+                    }
+                    catch(Exception e){
+                        Log.e("onKey",e.toString());
+                        e.printStackTrace();
                     }
                 }
 
                 @Override
                 public void onText(CharSequence charSequence) {
 
+                    Log.d("onText","charSequence: "+charSequence);
                 }
 
                 @Override
@@ -177,6 +220,7 @@ public class CustomKeyboard {
     public void openKeyboard(View v) {
 
         if( v!= null ) {
+            Log.d("openKeyboard","toggle");
             if( isCustomKeyboardVisible() )
                 kbView.setVisibility(View.INVISIBLE);
             else
@@ -213,16 +257,25 @@ public class CustomKeyboard {
         });
         editText.setOnTouchListener(new View.OnTouchListener() {
             @Override public boolean onTouch(View v, MotionEvent event) {
-                EditText edittext = (EditText) v;
-                int inType = edittext.getInputType();       // Backup the input type
-                edittext.setInputType(InputType.TYPE_NULL); // Disable standard keyboard
-                edittext.onTouchEvent(event);               // Call native handler
-                edittext.setInputType(inType);              // Restore input type
-                return true; // Consume touch event
+                try {
+                    EditText edittext = (EditText) v;
+                    int inType = edittext.getInputType();       // Backup the input type
+
+                    Log.d("setting null input","eek?");
+                    edittext.setInputType(InputType.TYPE_NULL); // Disable standard keyboard
+                    edittext.onTouchEvent(event);               // Call native handler
+                    edittext.setInputType(inType);              // Restore input type
+                    return true; // Consume touch event
+                }
+                catch(Exception e){
+                    Log.e("onTouchListener", e.toString());
+                    e.printStackTrace();
+                }
+                return true;
             }
         });
-        // Disable spell check (hex strings look like words to Android)
-        editText.setInputType( editText.getInputType() | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS );
+        // Disable spell check
+        editText.setInputType(editText.getInputType() | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
     }
 
     // helpers to hide/show/check custom keyboard
@@ -232,9 +285,19 @@ public class CustomKeyboard {
     }
 
     public void showCustomKeyboard( View v ) {
-        kbView.setVisibility(View.VISIBLE);
-        kbView.setEnabled(true);
-        if( v!=null ) ((InputMethodManager)hostActivity.getSystemService(Activity.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(v.getWindowToken(), 0);
+        try {
+            kbView.setVisibility(View.VISIBLE);
+            kbView.setEnabled(true);
+            if (v != null) {
+
+                Log.d("forcing the input shut","eek2?");
+                ((InputMethodManager) hostActivity.getSystemService(Activity.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(v.getWindowToken(), 0);
+            }
+        }
+        catch (Exception e){
+            Log.e("showCustomKeyboard", e.toString());
+            e.printStackTrace();
+        }
     }
 
     public boolean isCustomKeyboardVisible() {

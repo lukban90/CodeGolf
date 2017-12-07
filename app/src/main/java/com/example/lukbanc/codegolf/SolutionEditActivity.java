@@ -157,10 +157,16 @@ public class SolutionEditActivity extends AppCompatActivity {
     // onClick to open default keyboard
     public void onDefaultKeyboard( View v ) {
         if(v != null) {
-            InputMethodManager imm = (InputMethodManager)
-                    getSystemService( Context.INPUT_METHOD_SERVICE );
+            try {
+                InputMethodManager imm = (InputMethodManager)
+                        getSystemService(Context.INPUT_METHOD_SERVICE);
 
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+                imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
+            }
+            catch(Exception e){
+                Log.e("onDefaultKeyboard", e.toString());
+                e.printStackTrace();
+            }
         }
     }
 

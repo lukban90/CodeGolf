@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
-    android:keyWidth="15%p"
-    android:keyHeight="10%p" >
+    android:keyWidth="17%p"
+    android:keyHeight="8%p">
+
 
     <Row>
         <Key android:keyLabel="def"     android:codes="5500"/>
         <Key android:keyLabel="print"   android:codes="5501" />
         <Key android:keyLabel="lambda"  android:codes="5502" />
         <Key android:keyLabel="return"  android:codes="5503" />
+        <Key android:keyLabel="[ENTER]" android:codes="5512" />
+        <Key android:keyLabel="[R]" android:codes="5515" />
     </Row>
 
     <Row>
@@ -15,6 +18,8 @@
         <Key android:keyLabel="for"     android:codes="5505" />
         <Key android:keyLabel="in"      android:codes="5506" />
         <Key android:keyLabel="if"      android:codes="5507" />
+        <Key android:keyLabel="[INDENT]" android:codes="5513" />
+        <Key android:keyLabel="[L]" android:codes="5516" />
     </Row>
 
     <Row>
@@ -22,6 +27,21 @@
         <Key android:keyLabel="elif"    android:codes="5509" />
         <Key android:keyLabel="true"    android:codes="5510" />
         <Key android:keyLabel="false"    android:codes="5511" />
+        <Key android:keyLabel="[SP.]" android:codes="5517" />
+        <Key android:keyLabel="[BACK]" android:codes="5514" />
+    </Row>
+
+    <Row>
+        <Key android:keyLabel="#" android:codes="5518" />
+        <Key android:keyLabel="/?" android:codes="5519" />
+        <Key android:keyLabel="(" android:codes="5520" />
+        <Key android:keyLabel=")" android:codes="5521" />
+        <Key android:keyLabel="[" android:codes="5522" />
+        <Key android:keyLabel="]" android:codes="5523" />
+        <Key android:keyLabel=":" android:codes="5524" />
+        <Key android:keyLabel="." android:codes="5525" />
+        <Key android:keyLabel='"' android:codes="5526" />
+        <Key android:keyLabel="'" android:codes="5527" />
     </Row>
 
 </Keyboard>
