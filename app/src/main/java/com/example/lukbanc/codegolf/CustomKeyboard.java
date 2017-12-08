@@ -56,6 +56,9 @@ public class CustomKeyboard {
     private final static int K_QUOTE = 5526;
     private final static int K_APOSTROPHE = 5527;
     private final static int K_UNDERSCORE = 5528;
+    private final static int K_EQUALS = 5529;
+    private final static int K_LESS = 5530;
+    private final static int K_GREATER = 5531;
 
     // Functionality of the keyboard
     private KeyboardView.OnKeyboardActionListener myKeyboardActionListener =
@@ -184,6 +187,15 @@ public class CustomKeyboard {
                                 break;
                             case K_UNDERSCORE:
                                 insertSeq(editable, start, "_");
+                                break;
+                            case K_EQUALS:
+                                insertSeq(editable, start, "=");
+                                break;
+                            case K_LESS:
+                                insertSeq(editable, start, "<");
+                                break;
+                            case K_GREATER:
+                                insertSeq(editable, start, ">");
                                 break;
 
                         }

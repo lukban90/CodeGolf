@@ -27,13 +27,16 @@
         <Key android:keyLabel="elif"    android:codes="5509" />
         <Key android:keyLabel="true"    android:codes="5510" />
         <Key android:keyLabel="false"    android:codes="5511" />
+        <Key android:keyLabel="="    android:codes="5529" />
+        <Key android:keyLabel="&lt;"    android:codes="5530" />
+        <Key android:keyLabel="&gt;"    android:codes="5531" />
         <Key android:keyLabel="[SP.]" android:codes="5517" />
         <Key android:keyLabel="[L]" android:codes="5516" />
     </Row>
 
     <Row>
         <Key android:keyLabel="#" android:codes="5518" />
-        <Key android:keyLabel="/?" android:codes="5519" />
+        <Key android:keyLabel="\?" android:codes="5519" />
         <Key android:keyLabel="(" android:codes="5520" />
         <Key android:keyLabel=")" android:codes="5521" />
         <Key android:keyLabel="[" android:codes="5522" />
