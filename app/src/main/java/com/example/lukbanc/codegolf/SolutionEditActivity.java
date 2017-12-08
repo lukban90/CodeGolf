@@ -102,8 +102,10 @@ public class SolutionEditActivity extends AppCompatActivity {
 
     public void sendSolution() {
         EditText et = findViewById(R.id.puzzle_soln);
+        TextView tv = findViewById(R.id.output);
 
         String solText = et.getText().toString();
+        tv.setText("Your score for this solution " + Integer.toString(solText.length()) + "\n");
         String baseUrl = "http://67.171.28.34/py/submit_solution.py";
 
         String encoded = URLEncoder.encode(solText);
@@ -136,8 +138,7 @@ public class SolutionEditActivity extends AppCompatActivity {
     public void displayResult(String output) {
         RelativeLayout wrapper = findViewById(R.id.wrapper);
         TextView tv = findViewById(R.id.output);
-
-        //textView.setText(Html.fromHtml(Html.fromHtml(text).toString()))
+        output = tv.getText().toString() + output;
         tv.setText(output);
     }
 
