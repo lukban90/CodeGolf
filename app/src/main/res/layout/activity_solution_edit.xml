@@ -93,14 +93,15 @@
             android:layout_below="@id/kb_default"
             android:layout_width="match_parent"
             android:layout_height="320dp">
-            <EditText
-                android:id="@+id/puzzle_soln"
+            <EditText                android:id="@+id/puzzle_soln"
                 android:layout_below="@+id/kb_custom"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:inputType="textMultiLine"
+                android:minHeight="100dp"
+                android:maxLines="50"
                 />
         </ScrollView>
         <ScrollView

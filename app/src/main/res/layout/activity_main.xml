@@ -22,7 +22,7 @@
 
     <Button
         android:id="@+id/btn_puzzle_select"
-        android:layout_width="wrap_content"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="200dp"
         android:text="@string/activity_name_puzzle_select"
@@ -31,7 +31,7 @@
 
     <Button
         android:id="@+id/btn_user_login"
-        android:layout_width="wrap_content"
+        android:layout_width="130dp"
         android:layout_height="wrap_content"
         android:text="@string/activity_name_user_login"
         android:onClick="switchToLogin"

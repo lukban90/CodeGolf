@@ -55,6 +55,7 @@ public class CustomKeyboard {
     private final static int K_PERIOD = 5525;
     private final static int K_QUOTE = 5526;
     private final static int K_APOSTROPHE = 5527;
+    private final static int K_UNDERSCORE = 5528;
 
     // Functionality of the keyboard
     private KeyboardView.OnKeyboardActionListener myKeyboardActionListener =
@@ -97,6 +98,7 @@ public class CustomKeyboard {
                                 break;
                             case LAMBDA:
                                 insertSeq(editable, start, "lambda ");
+                                break;
                             case RETURN:
                                 insertSeq(editable, start, "return ");
                                 break;
@@ -126,7 +128,7 @@ public class CustomKeyboard {
                                 insertSeq(editable, start, "False");
                                 break;
                             case ENTER:
-                                insertSeq(editable, start, "<br/>");
+                                insertSeq(editable, start, System.getProperty("line.separator"));
                             case INDENT:
                                 // insert 4 spaces
                                 insertSeq(editable, start, "    ");
@@ -179,6 +181,9 @@ public class CustomKeyboard {
                                 break;
                             case K_QUOTE:
                                 insertSeq(editable, start, "\"");
+                                break;
+                            case K_UNDERSCORE:
+                                insertSeq(editable, start, "_");
                                 break;
 
                         }
@@ -255,7 +260,7 @@ public class CustomKeyboard {
                 showCustomKeyboard(view);
             }
         });
-        editText.setOnTouchListener(new View.OnTouchListener() {
+        /*editText.setOnTouchListener(new View.OnTouchListener() {
             @Override public boolean onTouch(View v, MotionEvent event) {
                 try {
                     EditText edittext = (EditText) v;
@@ -274,6 +279,7 @@ public class CustomKeyboard {
                 return true;
             }
         });
+            */
         // Disable spell check
         editText.setInputType(editText.getInputType() | InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
     }
