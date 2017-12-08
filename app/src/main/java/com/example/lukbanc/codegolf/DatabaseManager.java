@@ -39,7 +39,8 @@ public class DatabaseManager extends SQLiteOpenHelper {
 
     // columns for TBL_PUZZLE
     public static final String COL_USER_ID = "user_id";
-    public static final String COL_USER_NAME = "user_name";
+    public static final String COL_IS_NEW = "new_user";
+    public static final String COL_PASS_HASH = "pass_hash";
     public static final String COL_EMAIL = "email";
     public static final String COL_TARG_FUNC_NAME ="targ_func_name";
 
@@ -72,14 +73,6 @@ public class DatabaseManager extends SQLiteOpenHelper {
         sql += COL_PUZZLE_TITLE + " TEXT NOT NULL, ";
         sql += COL_PUZZLE_DESC + " TEXT NOT NULL, ";
         sql += COL_PUZZLE_ADDED + " TEXT NULL";
-        sql += ");";
-        return sql;
-    }
-    private String getSqlCreateTableUser(){
-        String sql = "CREATE TABLE " + TBL_USER + " ( ";
-        sql += COL_USER_ID + " INTEGER PRIMARY KEY, ";
-        sql += COL_USER_NAME + " TEXT NOT NULL, ";
-        sql += COL_EMAIL + " TEXT NULL";
         sql += ");";
         return sql;
     }
@@ -160,24 +153,6 @@ public class DatabaseManager extends SQLiteOpenHelper {
             return new User(id, name, email);
         }
         return null;
-    }
-
-    public int insertUser(User user) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        String sqlInsert = "insert into " + TBL_USER +
-                " (" + COL_USER_NAME + "," + COL_EMAIL + ")";
-        sqlInsert += " values ('" + user.getUserName() + "', '" + user.getEmail() + "')";
-        db.execSQL(sqlInsert);
-        // now get the insert id
-        String sqlGetId = "select last_insert_rowid()";
-        Cursor cursor = db.rawQuery(sqlGetId, null);
-        int id = -1;
-        if (cursor.moveToFirst()) {
-            id = cursor.getInt(0);
-        }
-        db.close();
-        user.setUserId(id);
-        return id;
     }
 
     public Solution selectSolutionById( int solutionId ){

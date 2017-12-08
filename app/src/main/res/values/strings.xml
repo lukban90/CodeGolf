@@ -8,9 +8,11 @@
     <string name="friends_high_scores">Top scores of your friends:</string>
     <string name="back_to_problems">Back to the problem</string>
     <string name="example_problem_title">Problem #3124 What a day!</string>
-    <string name="login_user">Username</string>
+    <string name="login_user">Email</string>
     <string name="login_pass">Password</string>
     <string name="login_submit">Submit</string>
+    <string name="signing_in">Sign in</string>
+    <string name="signing_up">Sign up</string>
 
     <!--Chris Lukban-->
     <string name="search">search</string>

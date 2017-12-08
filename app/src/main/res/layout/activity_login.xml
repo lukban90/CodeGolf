@@ -41,6 +41,28 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="40dp"
             android:text="@string/login_submit"
+            android:onClick="submit"
+            />
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            >
+            <RadioButton android:id="@+id/radio_sign_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/signing_in"
+                android:checked="true"
+                />
+            <RadioButton android:id="@+id/radio_sign_up"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/signing_up"
+                />
+        </RadioGroup>
+        <TextView
+            android:id="@+id/responce"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             />
     </LinearLayout>
 </android.support.constraint.ConstraintLayout>
